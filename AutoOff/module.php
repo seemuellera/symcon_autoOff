@@ -72,6 +72,8 @@ class AutoOff extends IPSModule {
 		$sensorListColumns = Array(
 			Array(
 				"caption" => "Variable Id",
+				"name" => "VariableId",
+				"width" => "100px",
 				"edit" => Array("type" => "SelectVariable"),
 				"add" => 0
 			)
