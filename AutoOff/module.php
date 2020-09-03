@@ -62,6 +62,9 @@ class AutoOff extends IPSModule {
 			$this->RegisterMessage($currentVariable->VariableId, VM_UPDATE);
 		}
 		
+		// Also register the target variable to keep track of change events
+		$this->RegisterMessage($this->ReadPropertyInteger("TargetStatusVariableId"), VM_UPDATE);
+		
 		// Diese Zeile nicht löschen
 		parent::ApplyChanges();
 	}
@@ -180,6 +183,12 @@ class AutoOff extends IPSModule {
 	
 		// $this->LogMessage("$TimeStamp - $SenderId - $Message", "DEBUG");
 		
+		if ($SenderId == $this->ReadPropertyInteger("TargetStatusVariableId")) {
+			
+			$this->RefreshInformation();
+			return;
+		}
+		
 		$triggerVariablesJson = $this->ReadPropertyString("TriggerVariables");
 		$triggerVariables = json_decode($triggerVariablesJson);
 		
@@ -200,6 +209,7 @@ class AutoOff extends IPSModule {
 			$this->Trigger();
 			return;
 		}
+		
 	}
 	
 	public function Trigger() {
