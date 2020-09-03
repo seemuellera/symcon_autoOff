@@ -56,10 +56,13 @@ class AutoOff extends IPSModule {
 		$triggerVariablesJson = $this->ReadPropertyString("TriggerVariables");
 		$triggerVariables = json_decode($triggerVariablesJson);
 		
-		foreach($triggerVariables as $currentVariable) {
-			
-			$this->LogMessage("Registering Message Sink for Variable ID " . $currentVariable->VariableId, "DEBUG");
-			$this->RegisterMessage($currentVariable->VariableId, VM_UPDATE);
+		if (is_array($triggerVariables)) {
+		
+			foreach($triggerVariables as $currentVariable) {
+				
+				$this->LogMessage("Registering Message Sink for Variable ID " . $currentVariable->VariableId, "DEBUG");
+				$this->RegisterMessage($currentVariable->VariableId, VM_UPDATE);
+			}
 		}
 		
 		// Also register the target variable to keep track of change events
@@ -192,24 +195,26 @@ class AutoOff extends IPSModule {
 		$triggerVariablesJson = $this->ReadPropertyString("TriggerVariables");
 		$triggerVariables = json_decode($triggerVariablesJson);
 		
-		$isTriggerVariable = false;
-		
-		foreach ($triggerVariables as $currentVariable) {
+		if (is_array($triggerVariables)) {
 			
-			if ($SenderId == $currentVariable->VariableId) {
+			$isTriggerVariable = false;
+			
+			foreach ($triggerVariables as $currentVariable) {
 				
-				$isTriggerVariable = true;
-				break;
+				if ($SenderId == $currentVariable->VariableId) {
+					
+					$isTriggerVariable = true;
+					break;
+				}
 			}
-		}
-		
-		if ($isTriggerVariable) {
 			
-			$this->LogMessage("Triggered by Variable $SenderId","DEBUG");
-			$this->Trigger();
-			return;
-		}
-		
+			if ($isTriggerVariable) {
+				
+				$this->LogMessage("Triggered by Variable $SenderId","DEBUG");
+				$this->Trigger();
+				return;
+			}
+		}		
 	}
 	
 	public function Trigger() {
