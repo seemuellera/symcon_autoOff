@@ -26,6 +26,7 @@ class AutoOff extends IPSModule {
 
 		// Variables
 		$this->RegisterVariableBoolean("Status","Status","~Switch");
+		$this->RegisterVariableInteger("LastTrigger","Last Trigger","~UnixTimestamp");
 
 		// Default Actions
 		$this->EnableAction("Status");
@@ -68,6 +69,7 @@ class AutoOff extends IPSModule {
 		
 		// Add the buttons for the test center
 		$form['actions'][] = Array(	"type" => "Button", "label" => "Refresh", "onClick" => 'AUTOOFF_RefreshInformation($id);');
+		$form['actions'][] = Array(	"type" => "Button", "label" => "Trigger On", "onClick" => 'AUTOOFF_TriggerOn($id);');
 
 		// Return the completed form
 		return json_encode($form);
@@ -103,6 +105,19 @@ class AutoOff extends IPSModule {
 				break;
 			default:
 				throw new Exception("Invalid Ident");
+		}
+	}
+	
+	public function TriggerOn() {
+		
+		if (GetValue(GetIDForIdent("Status"))) {
+			
+			$this->LogMessage("Triggering AutoOff", "DEBUG");
+			SetValue(GetIDForIdent("LastTrigger"), time());
+		}
+		{
+			
+			$this->LogMessage("Ignoring Trigger because Status is off", "DEBUG");
 		}
 	}
 
