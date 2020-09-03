@@ -221,10 +221,21 @@ class AutoOff extends IPSModule {
 	
 	public function Abort() {
 		
+		if (! GetValue($this->GetIDForIdent("DetectionEnabled"))) {
+			
+			$this->LogMessage("Ignoring Manual abort because Detection is off", "INFO");
+			return;
+		}
+		
 		$this->LogMessage("Aborting timer before expiration, turning off device", "DEBUG");
-		RequestAction($this->ReadPropertyInteger("TargetStatusVariableId"), false);
 		$this->SetTimerInterval("CheckTimeout", 0);
 		SetValue($this->GetIDForIdent("Status"), false);
+		
+		// Turn device off is on
+		if (GetValue($this->ReadPropertyInteger("TargetStatusVariableId"))) {
+			
+			RequestAction($this->ReadPropertyInteger("TargetStatusVariableId"), false);
+		}
 	}
 
 }
