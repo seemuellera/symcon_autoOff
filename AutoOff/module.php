@@ -50,6 +50,11 @@ class AutoOff extends IPSModule {
 		$newInterval = $this->ReadPropertyInteger("RefreshInterval") * 1000;
 		$this->SetTimerInterval("RefreshInformation", $newInterval);
 		
+		$triggerVariablesJson = $this->ReadPropertyString("TriggerVariables");
+		$triggerVariables = json_decode($triggerVariablesJson);
+		
+		print_r($triggerVariables);
+		
 		// Diese Zeile nicht löschen
 		parent::ApplyChanges();
 	}
