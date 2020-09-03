@@ -27,12 +27,14 @@ class AutoOff extends IPSModule {
 		// Variables
 		$this->RegisterVariableBoolean("Status","Status","~Switch");
 		$this->RegisterVariableInteger("LastTrigger","Last Trigger","~UnixTimestamp");
+		$this->RegisterVariableInteger("Timeout","Timeout");
 
 		// Default Actions
 		$this->EnableAction("Status");
 
 		// Timer
 		$this->RegisterTimer("RefreshInformation", 0 , 'AUTOOFF_RefreshInformation($_IPS[\'TARGET\']);');
+		$this->RegisterTimer("CheckTimeout", 0 , 'AUTOOFF_CheckTimeout($_IPS[\'TARGET\']);');
 
     }
 
@@ -110,14 +112,51 @@ class AutoOff extends IPSModule {
 	
 	public function TriggerOn() {
 		
-		if (GetValue($this->GetIDForIdent("Status"))) {
-			
-			$this->LogMessage("Triggering AutoOff", "DEBUG");
-			SetValue($this->GetIDForIdent("LastTrigger"), time());
-		}
-		{
+		if (! GetValue($this->GetIDForIdent("Status"))) {
 			
 			$this->LogMessage("Ignoring Trigger because Status is off", "DEBUG");
+			return;
+		}
+		
+		$this->LogMessage("Triggering Timer", "DEBUG");
+		SetValue($this->GetIDForIdent("LastTrigger"), time());
+		
+		// Set Time to timeout with some security margin (2 seconds)
+		$newInterval = ( GetValue($this->GetIDForIdent("Timeout") ) + 2 ) * 1000;
+		$this->SetTimerInterval("CheckTimeout", $newInterval);
+		
+		
+		if (! GetValue($this->ReadPropertyInteger("TargetStatusVariableId"))) {
+			
+			$this->LogMessage("Switching on target device","DEBUG");
+			RequestAction($this->ReadPropertyInteger("TargetStatusVariableId"), true);
+		}
+		else {
+			
+			$this->LogMessage("Device is already switched on","DEBUG");
+		}
+	}
+	
+	public function CheckTimeout() {
+		
+		if (! GetValue($this->GetIDForIdent("Status"))) {
+			
+			$this->LogMessage("Ignoring Timeout because Status is off", "DEBUG");
+			return;
+		}
+		
+		$timestampTimeout = GetValue($this->GetIDForIdent("LastTrigger")) + GetValue($this->GetIDForIdent("Timeout"));
+		
+		if ($timestampTimeout <= time()) {
+			
+			$this->LogMessage("Timer has expired, turning off device", "DEBUG");
+			RequestAction($this->ReadPropertyInteger("TargetStatusVariableId")), false);
+			$this->SetTimerInterval("CheckTimeout", 0);
+		}
+		else {
+			
+			$timeDelta = time() - $timestampTimeout;
+			$this->LogMessage("Timer has not yet expired, $timeDelta seconds left", "DEBUG");
 		}
 	}
 
