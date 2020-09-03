@@ -54,7 +54,7 @@ class AutoOff extends IPSModule {
 		$triggerVariablesJson = $this->ReadPropertyString("TriggerVariables");
 		$triggerVariables = json_decode($triggerVariablesJson);
 		
-		print_r($triggerVariables);
+		$this->LogMessage("JSON: $triggerVariablesJson", "DEBUG");
 		
 		// Diese Zeile nicht löschen
 		parent::ApplyChanges();
