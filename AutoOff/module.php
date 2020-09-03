@@ -94,7 +94,7 @@ class AutoOff extends IPSModule {
 		
 		// Add the buttons for the test center
 		$form['actions'][] = Array(	"type" => "Button", "label" => "Refresh", "onClick" => 'AUTOOFF_RefreshInformation($id);');
-		$form['actions'][] = Array(	"type" => "Button", "label" => "Trigger On", "onClick" => 'AUTOOFF_TriggerOn($id);');
+		$form['actions'][] = Array(	"type" => "Button", "label" => "Trigger On", "onClick" => 'AUTOOFF_Trigger($id);');
 
 		// Return the completed form
 		return json_encode($form);
@@ -117,6 +117,17 @@ class AutoOff extends IPSModule {
 
 		$this->LogMessage("Refresh in Progress", "DEBUG");
 		
+		if (! GetValue($this->GetIDForIdent("DetectionEnabled"))) {
+			
+			if (GetValue($this->GetIDForIdent("Status") )) {
+				
+				$this->SetTimerInterval("CheckTimeout", 0);
+				SetValue($this->GetIDForIdent("Status"), false);
+				
+				return;
+			}
+		}
+		
 		if (GetValue($this->GetIDForIdent("Status"))) {
 			
 			if (! GetValue($this->ReadPropertyInteger("TargetStatusVariableId"))) {
@@ -124,6 +135,19 @@ class AutoOff extends IPSModule {
 				// Triger a manual abort if the device was turned on manually
 				$this->LogMessage("The target device was manually switched off before timer expiration");
 				$this->Abort();
+				
+				return;
+			}
+		}
+		else {
+			
+			if (GetValue($this->ReadPropertyInteger("TargetStatusVariableId"))) {
+
+				// Activate the timer if motion detection is active and the device is on but Status is off. Maybe the message was not processed
+				$this->LogMessage("The target device was manually switched on but the event was missed");
+				$this->Trigger();
+				
+				return;
 			}
 		}
 	}
@@ -137,7 +161,7 @@ class AutoOff extends IPSModule {
 				// If switch on
 				if ($Value) {
 					
-					$this->TriggerOn();
+					$this->Trigger();
 				}
 				else {
 				
@@ -173,12 +197,12 @@ class AutoOff extends IPSModule {
 		if ($isTriggerVariable) {
 			
 			$this->LogMessage("Triggered by Variable $SenderId","DEBUG");
-			$this->TriggerOn();
+			$this->Trigger();
 			return;
 		}
 	}
 	
-	public function TriggerOn() {
+	public function Trigger() {
 		
 		if (! GetValue($this->GetIDForIdent("DetectionEnabled"))) {
 			
