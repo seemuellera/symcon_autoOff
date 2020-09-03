@@ -82,7 +82,7 @@ class AutoOff extends IPSModule {
 			Array(
 				"caption" => "Variable Id",
 				"name" => "VariableId",
-				"width" => "300px",
+				"width" => "650px",
 				"edit" => Array("type" => "SelectVariable"),
 				"add" => 0
 			)
