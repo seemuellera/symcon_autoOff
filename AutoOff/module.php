@@ -60,6 +60,8 @@ class AutoOff extends IPSModule {
 			$this->RegisterMessage($currentVariable->VariableId, VM_UPDATE);
 		}
 		
+		$this->RegisterMessage(0, VM_UPDATE);
+		
 		// Diese Zeile nicht löschen
 		parent::ApplyChanges();
 	}
