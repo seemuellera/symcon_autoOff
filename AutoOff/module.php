@@ -110,10 +110,10 @@ class AutoOff extends IPSModule {
 	
 	public function TriggerOn() {
 		
-		if (GetValue(GetIDForIdent("Status"))) {
+		if (GetValue($this->GetIDForIdent("Status"))) {
 			
 			$this->LogMessage("Triggering AutoOff", "DEBUG");
-			SetValue(GetIDForIdent("LastTrigger"), time());
+			SetValue($this->GetIDForIdent("LastTrigger"), time());
 		}
 		{
 			
