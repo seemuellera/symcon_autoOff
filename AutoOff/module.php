@@ -138,10 +138,22 @@ class AutoOff extends IPSModule {
 		$triggerVariablesJson = $this->ReadPropertyString("TriggerVariables");
 		$triggerVariables = json_decode($triggerVariablesJson);
 		
-		if (array_search($SenderId, array_column($triggerVariables, "VariableId"))) {
+		$isTriggerVariable = false;
+		
+		foreach ($triggerVariables as $currentVariable) {
+			
+			if ($SenderId == $currentVariable->VariableId) {
+				
+				$isTriggerVariable = true;
+				break;
+			}
+		}
+		
+		if ($isTriggerVariable) {
 			
 			$this->LogMessage("Triggered by Variable $SenderId","DEBUG");
 			$this->TriggerOn();
+			return;
 		}
 	}
 	
