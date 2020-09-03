@@ -73,7 +73,7 @@ class AutoOff extends IPSModule {
 			"caption" => "Variable Id",
 			"edit" => Array("type" => "SelectVariable")
 		);
-		$form['elements'][] = Array("type" => "List", "name" => "TriggerVariables", "Trigger Variables");
+		$form['elements'][] = Array("type" => "List", "columns" => $sensorListColumns, "name" => "TriggerVariables", "caption" => "Trigger Variables", "add" => true);
 		
 		// Add the buttons for the test center
 		$form['actions'][] = Array(	"type" => "Button", "label" => "Refresh", "onClick" => 'AUTOOFF_RefreshInformation($id);');
