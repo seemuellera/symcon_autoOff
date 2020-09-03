@@ -56,7 +56,7 @@ class AutoOff extends IPSModule {
 		
 		foreach($triggerVariables as $currentVariable) {
 			
-			$this->LogMessage("Trigger Variable: $currentVariable", "DEBUG");
+			$this->LogMessage("Trigger Variable: " . $currentVariable->VariableId, "DEBUG");
 		}
 		
 		// Diese Zeile nicht löschen
