@@ -126,9 +126,13 @@ class AutoOff extends IPSModule {
 			case "Status":
 				// If switch on
 				if ($Value) {
+					
 					$this->TriggerOn();
 				}
-				SetValue($this->GetIDForIdent($Ident), $Value);
+				else {
+				
+					$this->Abort();
+				}
 				break;
 			case "DetectionEnabled":
 				SetValue($this->GetIDForIdent($Ident), $Value);
