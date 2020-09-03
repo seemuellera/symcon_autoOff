@@ -23,6 +23,7 @@ class AutoOff extends IPSModule {
 		$this->RegisterPropertyInteger("RefreshInterval",0);
 		$this->RegisterPropertyInteger("TargetStatusVariableId",0);
 		$this->RegisterPropertyBoolean("DebugOutput",false);
+		$this->RegisterPropertyString("TriggerVariables", "");
 
 		// Variables
 		$this->RegisterVariableBoolean("Status","Status","~Switch");
