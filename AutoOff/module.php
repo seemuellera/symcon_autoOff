@@ -72,7 +72,8 @@ class AutoOff extends IPSModule {
 		$sensorListColumns = Array(
 			Array(
 				"caption" => "Variable Id",
-				"edit" => Array("type" => "SelectVariable")
+				"edit" => Array("type" => "SelectVariable"),
+				"add" => 0
 			)
 		);
 		$form['elements'][] = Array("type" => "List", "columns" => $sensorListColumns, "name" => "TriggerVariables", "caption" => "Trigger Variables", "add" => true, "delete" => true);
