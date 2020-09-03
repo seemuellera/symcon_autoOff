@@ -130,9 +130,18 @@ class AutoOff extends IPSModule {
 		}
 	}
 	
-	public function MessageSink($TimeStamp, $SenderID, $Message, $Data) {
+	public function MessageSink($TimeStamp, $SenderId, $Message, $Data) {
 	
-		$this->LogMessage("$TimeStamp - $SenderID - $Message - $Data", "DEBUG");
+		//$this->LogMessage("$TimeStamp - $SenderID - $Message - $Data", "DEBUG");
+		
+		$triggerVariablesJson = $this->ReadPropertyString("TriggerVariables");
+		$triggerVariables = json_decode($triggerVariablesJson);
+		
+		if (array_search($SenderId, array_column($triggerVariables, "VariableId"))) {
+			
+			$this->LogMessage("Triggered by Variable $SenderId","DEBUG");
+			$this->TriggerOn();
+		}
 	}
 	
 	public function TriggerOn() {
