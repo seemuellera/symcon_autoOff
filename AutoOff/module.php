@@ -33,6 +33,7 @@ class AutoOff extends IPSModule {
 
 		// Default Actions
 		$this->EnableAction("Status");
+		$this->EnableAction("DetectionEnabled");
 
 		// Timer
 		$this->RegisterTimer("RefreshInformation", 0 , 'AUTOOFF_RefreshInformation($_IPS[\'TARGET\']);');
@@ -123,8 +124,10 @@ class AutoOff extends IPSModule {
 		switch ($Ident) {
 		
 			case "Status":
-		
-				// Neuen Wert in die Statusvariable schreiben
+				// If switch on
+				if ($Value) {
+					$this->TriggerOn();
+				}
 				SetValue($this->GetIDForIdent($Ident), $Value);
 				break;
 			case "DetectionEnabled":
@@ -210,6 +213,14 @@ class AutoOff extends IPSModule {
 			$timeDelta = time() - $timestampTimeout;
 			$this->LogMessage("Timer has not yet expired, $timeDelta seconds left", "DEBUG");
 		}
+	}
+	
+	public function Abort() {
+		
+		$this->LogMessage("Aborting timer before expiration, turning off device", "DEBUG");
+		RequestAction($this->ReadPropertyInteger("TargetStatusVariableId"), false);
+		$this->SetTimerInterval("CheckTimeout", 0);
+		SetValue($this->GetIDForIdent("Status"), false);
 	}
 
 }
