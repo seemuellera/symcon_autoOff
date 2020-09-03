@@ -1,0 +1,14 @@
+{
+  "id": "{725D7AA4-58FA-465B-8E7C-B3750D645340}",
+  "name": "AutoOff",
+  "type": 3,
+  "vendor": "Andreas",
+  "aliases": 
+  [
+	  "AutoOff"
+  ],
+  "parentRequirements": [],
+  "childRequirements": [],
+  "implemented": [],
+  "prefix": "AUTOOFF"
+}
