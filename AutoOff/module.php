@@ -56,6 +56,7 @@ class AutoOff extends IPSModule {
 		
 		foreach($triggerVariables as $currentVariable) {
 			
+			$this->LogMessage("Registering Message Sink for Variable ID " . $currentVariable->VariableId, "DEBUG");
 			$this->RegisterMessage($currentVariable->VariableId, VM_UPDATE);
 		}
 		
