@@ -116,6 +116,16 @@ class AutoOff extends IPSModule {
 	public function RefreshInformation() {
 
 		$this->LogMessage("Refresh in Progress", "DEBUG");
+		
+		if (GetValue($this->GetIDForIdent("Status"))) {
+			
+			if (! GetValue($this->ReadPropertyInteger("TargetStatusVariableId"))) {
+				
+				// Triger a manual abort if the device was turned on manually
+				$this->LogMessage("The target device was manually switched off before timer expiration");
+				$this->Abort();
+			}
+		}
 	}
 
 	public function RequestAction($Ident, $Value) {
