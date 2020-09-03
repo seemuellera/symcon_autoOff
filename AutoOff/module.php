@@ -44,18 +44,15 @@ class AutoOff extends IPSModule {
 	// Überschreibt die intere IPS_ApplyChanges($id) Funktion
 	public function ApplyChanges() {
 
-		
 		$newInterval = $this->ReadPropertyInteger("RefreshInterval") * 1000;
 		$this->SetTimerInterval("RefreshInformation", $newInterval);
 		
-
-			// Diese Zeile nicht löschen
-			parent::ApplyChanges();
+		// Diese Zeile nicht löschen
+		parent::ApplyChanges();
 	}
 
 
 	public function GetConfigurationForm() {
-
         	
 		// Initialize the form
 		$form = Array(
