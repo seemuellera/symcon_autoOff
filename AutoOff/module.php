@@ -56,7 +56,7 @@ class AutoOff extends IPSModule {
 		
 		foreach($triggerVariables as $currentVariable) {
 			
-			$this->LogMessage("Trigger Variable: " . $currentVariable->VariableId, "DEBUG");
+			$this->RegisterMessage($currentVariable->VariableId, VM_UPDATE);
 		}
 		
 		// Diese Zeile nicht löschen
@@ -128,6 +128,11 @@ class AutoOff extends IPSModule {
 			default:
 				throw new Exception("Invalid Ident");
 		}
+	}
+	
+	public function MessageSink($TimeStamp, $SenderID, $Message, $Data) {
+	
+		$this->LogMessage("$TimeStamp - $SenderID - $Message - $Data", "DEBUG");
 	}
 	
 	public function TriggerOn() {
