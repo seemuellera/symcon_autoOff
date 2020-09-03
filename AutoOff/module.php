@@ -27,6 +27,7 @@ class AutoOff extends IPSModule {
 
 		// Variables
 		$this->RegisterVariableBoolean("Status","Status","~Switch");
+		$this->RegisterVariableBoolean("DetectionEnabled","Motion Detection Enabled","~Switch");
 		$this->RegisterVariableInteger("LastTrigger","Last Trigger","~UnixTimestamp");
 		$this->RegisterVariableInteger("Timeout","Timeout");
 
@@ -126,6 +127,9 @@ class AutoOff extends IPSModule {
 				// Neuen Wert in die Statusvariable schreiben
 				SetValue($this->GetIDForIdent($Ident), $Value);
 				break;
+			case "DetectionEnabled":
+				SetValue($this->GetIDForIdent($Ident), $Value);
+				break;
 			default:
 				throw new Exception("Invalid Ident");
 		}
@@ -133,7 +137,7 @@ class AutoOff extends IPSModule {
 	
 	public function MessageSink($TimeStamp, $SenderId, $Message, $Data) {
 	
-		$this->LogMessage("$TimeStamp - $SenderId - $Message", "DEBUG");
+		// $this->LogMessage("$TimeStamp - $SenderId - $Message", "DEBUG");
 		
 		$triggerVariablesJson = $this->ReadPropertyString("TriggerVariables");
 		$triggerVariables = json_decode($triggerVariablesJson);
@@ -159,9 +163,9 @@ class AutoOff extends IPSModule {
 	
 	public function TriggerOn() {
 		
-		if (! GetValue($this->GetIDForIdent("Status"))) {
+		if (! GetValue($this->GetIDForIdent("DetectionEnabled"))) {
 			
-			$this->LogMessage("Ignoring Trigger because Status is off", "DEBUG");
+			$this->LogMessage("Ignoring Trigger because Detection is disabled", "DEBUG");
 			return;
 		}
 		
@@ -171,7 +175,7 @@ class AutoOff extends IPSModule {
 		// Set Time to timeout with some security margin (2 seconds)
 		$newInterval = ( GetValue($this->GetIDForIdent("Timeout") ) + 2 ) * 1000;
 		$this->SetTimerInterval("CheckTimeout", $newInterval);
-		
+		SetValue($this->GetIDForIdent("Status", true);
 		
 		if (! GetValue($this->ReadPropertyInteger("TargetStatusVariableId"))) {
 			
@@ -186,9 +190,9 @@ class AutoOff extends IPSModule {
 	
 	public function CheckTimeout() {
 		
-		if (! GetValue($this->GetIDForIdent("Status"))) {
+		if (! GetValue($this->GetIDForIdent("DetectionEnabled"))) {
 			
-			$this->LogMessage("Ignoring Timeout because Status is off", "DEBUG");
+			$this->LogMessage("Ignoring Timeout because Detection is off", "DEBUG");
 			return;
 		}
 		
@@ -199,6 +203,7 @@ class AutoOff extends IPSModule {
 			$this->LogMessage("Timer has expired, turning off device", "DEBUG");
 			RequestAction($this->ReadPropertyInteger("TargetStatusVariableId"), false);
 			$this->SetTimerInterval("CheckTimeout", 0);
+			SetValue($this->GetIDForIdent("Status", false);
 		}
 		else {
 			
