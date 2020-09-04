@@ -29,12 +29,28 @@ class AutoOff extends IPSModule {
 		$this->RegisterPropertyBoolean("DebugOutput",false);
 		$this->RegisterPropertyString("TriggerVariables", "");
 		$this->RegisterPropertyString("StopVariables", "");
+		
+		// Variable profiles
+		$variableProfileTimeout = "AUTOOFF.Timeout";
+		if (IPS_VariableProfileExists($variableProfileTimeout) ) {
+		
+			IPS_DeleteVariableProfile($variableProfileTimeout);
+		}			
+		IPS_CreateVariableProfile($variableProfileTimeout, 1);
+		IPS_SetVariableProfileIcon($variableProfileTimeout, "Clock");
+		IPS_SetVariableProfileAssociation($variableProfileTimeout, 60, "1 Minute", "", -1);
+		IPS_SetVariableProfileAssociation($variableProfileTimeout, 90, "90 Sekunden", "", -1);
+		IPS_SetVariableProfileAssociation($variableProfileTimeout, 120, "2 Minuten", "", -1);
+		IPS_SetVariableProfileAssociation($variableProfileTimeout, 300, "5 Minuten", "", -1);
+		IPS_SetVariableProfileAssociation($variableProfileTimeout, 900, "15 Minuten", "", -1);
+		IPS_SetVariableProfileAssociation($variableProfileTimeout, 1800, "30 Minuten", "", -1);
+		IPS_SetVariableProfileAssociation($variableProfileTimeout, 3600, "60 Minuten", "", -1);
 
 		// Variables
 		$this->RegisterVariableBoolean("Status","Status","~Switch");
 		$this->RegisterVariableBoolean("DetectionEnabled","Motion Detection Enabled","~Switch");
 		$this->RegisterVariableInteger("LastTrigger","Last Trigger","~UnixTimestamp");
-		$this->RegisterVariableInteger("Timeout","Timeout");
+		$this->RegisterVariableInteger("Timeout","Timeout","AUTOOFF.Timeout);
 
 		// Default Actions
 		$this->EnableAction("Status");
