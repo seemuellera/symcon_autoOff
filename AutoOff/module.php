@@ -105,7 +105,15 @@ class AutoOff extends IPSModule {
 				"add" => 0
 			)
 		);
-		$form['elements'][] = Array("type" => "List", "columns" => $sensorListColumns, "name" => "TriggerVariables", "caption" => "Trigger Variables", "add" => true, "delete" => true);
+		$form['elements'][] = Array(
+			"type" => "List", 
+			"columns" => $sensorListColumns, 
+			"name" => "TriggerVariables", 
+			"caption" => "Trigger Variables", 
+			"add" => true, 
+			"delete" => true,
+			"rowCount" => 5
+		);
 		
 		$stopVariablesColumns = Array(
 			Array(
@@ -123,7 +131,15 @@ class AutoOff extends IPSModule {
 				"add" => true
 			)
 		);
-		$form['elements'][] = Array("type" => "List", "columns" => $stopVariablesColumns, "name" => "StopVariables", "caption" => "Stop Variables", "add" => true, "delete" => true);
+		$form['elements'][] = Array(
+			"type" => "List", 
+			"columns" => $stopVariablesColumns, 
+			"name" => "StopVariables", 
+			"caption" => "Stop Variables", 
+			"add" => true, 
+			"delete" => true,
+			"rowCount" => 5
+		);
 		
 		// Add the buttons for the test center
 		$form['actions'][] = Array(	"type" => "Button", "label" => "Refresh", "onClick" => 'AUTOOFF_RefreshInformation($id);');
