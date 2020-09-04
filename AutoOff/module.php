@@ -273,9 +273,20 @@ class AutoOff extends IPSModule {
 		if ($timestampTimeout <= time()) {
 			
 			$this->LogMessage("Timer has expired, turning off device", "DEBUG");
-			RequestAction($this->ReadPropertyInteger("TargetStatusVariableId"), false);
 			$this->SetTimerInterval("CheckTimeout", 0);
 			SetValue($this->GetIDForIdent("Status"), false);
+			
+			if ($this->ReadPropertyBoolean("AbortTimerIfIntensityWasModified")) {
+				
+				if (GetValue($this->ReadPropertyInteger("TargetIntensityVariableId")) != $this->ReadPropertyInteger("TargetIntensity")) {
+					
+					$this->LogMessage("Stopping AutoOff timer but the target device will not be switched off as the Intensity level was manually modified");
+					return;
+				}	
+			}
+				
+			RequestAction($this->ReadPropertyInteger("TargetStatusVariableId"), false);
+			
 		}
 		else {
 			
