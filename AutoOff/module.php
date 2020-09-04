@@ -22,6 +22,10 @@ class AutoOff extends IPSModule {
 		$this->RegisterPropertyString("Sender","AutoOff");
 		$this->RegisterPropertyInteger("RefreshInterval",0);
 		$this->RegisterPropertyInteger("TargetStatusVariableId",0);
+		$this->RegisterPropertyInteger("TargetIntensityVariableId",0);
+		$this->RegisterPropertyInteger("TargetIntensity",0);
+		$this->RegisterPropertyBoolean("SetIntensity",false);
+		$this->RegisterPropertyBoolean("AbortTimerIfIntensityWasModified",false);/
 		$this->RegisterPropertyBoolean("DebugOutput",false);
 		$this->RegisterPropertyString("TriggerVariables", "");
 
@@ -85,7 +89,11 @@ class AutoOff extends IPSModule {
 		$form['elements'][] = Array("type" => "NumberSpinner", "name" => "RefreshInterval", "caption" => "Refresh Interval");
 		$form['elements'][] = Array("type" => "CheckBox", "name" => "DebugOutput", "caption" => "Enable Debug Output");
 		
-		$form['elements'][] = Array("type" => "SelectVariable", "name" => "TargetStatusVariableId", "caption" => "Status vaiable of target device");
+		$form['elements'][] = Array("type" => "SelectVariable", "name" => "TargetStatusVariableId", "caption" => "Status variable of target device");
+		$form['elements'][] = Array("type" => "CheckBox", "name" => "SetIntensity", "caption" => "Dim to specific intensity instead of switching on");
+		$form['elements'][] = Array("type" => "SelectVariable", "name" => "TargetIntensityVariableId", "caption" => "Intensity variable of target device");
+		$form['elements'][] = Array("type" => "NumberSpinner", "name" => "TargetIntensity", "caption" => "Intensity level");
+		$form['elements'][] = Array("type" => "CheckBox", "name" => "AbortTimerIfIntensityWasModified", "caption" => "Abort the Auto off timer if the intensity was modified manually during runtime");
 		
 		$sensorListColumns = Array(
 			Array(
