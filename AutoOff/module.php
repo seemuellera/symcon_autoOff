@@ -278,6 +278,29 @@ class AutoOff extends IPSModule {
 			return;
 		}
 		
+		$stopVariablesJson = $this->ReadPropertyString("StopVariables");
+		$stopVariables = json_decode($stopVariablesJson);
+		
+		if (is_array($stopVariables)) {
+		
+			$stopConditionFound = false;
+		
+			foreach($stopVariables as $currentVariable) {
+				
+				if (GetValue($currentVariable->VariableId) == $currentVariable->StopState) {
+				
+					$this->LogMessage("Stop Condition hit for variable " . $currentVariable->VariableId, "DEBUG");
+					$stopConditionFound = true;
+				}
+			}
+			
+			if ($stopConditionFound) {
+				
+				$this->LogMessage("Ignoring Trigger because at least on stop condition was hit", "DEBUG");
+				return;
+			}
+		}
+		
 		$this->LogMessage("Triggering Timer", "DEBUG");
 		SetValue($this->GetIDForIdent("LastTrigger"), time());
 		
