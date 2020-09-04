@@ -373,7 +373,7 @@ class AutoOff extends IPSModule {
 				}	
 			}
 			
-			$this->LogMessage("Turning off device");
+			$this->LogMessage("Turning off device","DEBUG");
 			RequestAction($this->ReadPropertyInteger("TargetStatusVariableId"), false);
 			
 		}
