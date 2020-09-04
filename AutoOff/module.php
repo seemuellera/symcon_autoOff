@@ -152,6 +152,16 @@ class AutoOff extends IPSModule {
 				
 				return;
 			}
+			
+			if ($this->GetTimerInterval("CheckTimeout") == 0) {
+				
+				// It looks like the timer is not running but the status variable is still on.
+				// This can happen if IPS crashes in a high load situation.
+				$this->LogMessage("It seems that the CheckTimeout timer got lost. Triggering again");
+				$this->Trigger();
+				
+				return;
+			}
 		}
 		else {
 			
