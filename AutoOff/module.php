@@ -50,7 +50,7 @@ class AutoOff extends IPSModule {
 		$this->RegisterVariableBoolean("Status","Status","~Switch");
 		$this->RegisterVariableBoolean("DetectionEnabled","Motion Detection Enabled","~Switch");
 		$this->RegisterVariableInteger("LastTrigger","Last Trigger","~UnixTimestamp");
-		$this->RegisterVariableInteger("Timeout","Timeout","AUTOOFF.Timeout);
+		$this->RegisterVariableInteger("Timeout","Timeout","AUTOOFF.Timeout");
 
 		// Default Actions
 		$this->EnableAction("Status");
