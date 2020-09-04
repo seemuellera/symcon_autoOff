@@ -28,6 +28,7 @@ class AutoOff extends IPSModule {
 		$this->RegisterPropertyBoolean("AbortTimerIfIntensityWasModified",false);
 		$this->RegisterPropertyBoolean("DebugOutput",false);
 		$this->RegisterPropertyString("TriggerVariables", "");
+		$this->RegisterPropertyString("StopVariables", "");
 
 		// Variables
 		$this->RegisterVariableBoolean("Status","Status","~Switch");
@@ -105,6 +106,24 @@ class AutoOff extends IPSModule {
 			)
 		);
 		$form['elements'][] = Array("type" => "List", "columns" => $sensorListColumns, "name" => "TriggerVariables", "caption" => "Trigger Variables", "add" => true, "delete" => true);
+		
+		$stopVariablesColumns = Array(
+			Array(
+				"caption" => "Variable Id",
+				"name" => "VariableId",
+				"width" => "650px",
+				"edit" => Array("type" => "SelectVariable"),
+				"add" => 0
+			),
+			Array(
+				"caption" => "Stop State",
+				"name" => "StopState",
+				"width" => "100px",
+				"edit" => Array("type" => "CheckBox"),
+				"add" => true
+			)
+		);
+		$form['elements'][] = Array("type" => "List", "columns" => $stopVariablesColumns, "name" => "StopVariables", "caption" => "Stop Variables", "add" => true, "delete" => true);
 		
 		// Add the buttons for the test center
 		$form['actions'][] = Array(	"type" => "Button", "label" => "Refresh", "onClick" => 'AUTOOFF_RefreshInformation($id);');
