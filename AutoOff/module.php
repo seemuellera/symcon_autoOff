@@ -55,6 +55,7 @@ class AutoOff extends IPSModule {
 		// Default Actions
 		$this->EnableAction("Status");
 		$this->EnableAction("DetectionEnabled");
+		$this->EnableAction("Timeout");
 
 		// Timer
 		$this->RegisterTimer("RefreshInformation", 0 , 'AUTOOFF_RefreshInformation($_IPS[\'TARGET\']);');
@@ -244,6 +245,9 @@ class AutoOff extends IPSModule {
 				}
 				break;
 			case "DetectionEnabled":
+				SetValue($this->GetIDForIdent($Ident), $Value);
+				break;
+			case "Timeout":
 				SetValue($this->GetIDForIdent($Ident), $Value);
 				break;
 			default:
