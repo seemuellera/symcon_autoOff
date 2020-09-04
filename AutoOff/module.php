@@ -272,7 +272,7 @@ class AutoOff extends IPSModule {
 		
 		if ($timestampTimeout <= time()) {
 			
-			$this->LogMessage("Timer has expired, turning off device", "DEBUG");
+			$this->LogMessage("Timer has expired", "DEBUG");
 			$this->SetTimerInterval("CheckTimeout", 0);
 			SetValue($this->GetIDForIdent("Status"), false);
 			
@@ -284,7 +284,8 @@ class AutoOff extends IPSModule {
 					return;
 				}	
 			}
-				
+			
+			$this->LogMessage("Turning off device");
 			RequestAction($this->ReadPropertyInteger("TargetStatusVariableId"), false);
 			
 		}
