@@ -176,7 +176,7 @@ class AutoOff extends IPSModule {
 		
 		$messageComplete = $severity . " - " . $message;
 		
-		IPS_LogMessage($this->ReadPropertyString('Sender') . " - " . $_IPS['TARGET'], $messageComplete);
+		IPS_LogMessage($this->ReadPropertyString('Sender') . " - " . $_IPS['INSTANCE'], $messageComplete);
 	}
 
 	public function RefreshInformation() {
