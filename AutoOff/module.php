@@ -412,9 +412,14 @@ class AutoOff extends IPSModule {
 	protected function CheckStopConditions($mode) {
 		
 		$stopVariables = $this->GetStopVariables();
+
+		if (! $stopVariables) {
+			
+			return false;
+		}
 		
 		$stopConditionFound = false;
-	
+
 		foreach($stopVariables as $currentVariable) {
 			
 			if (GetValue($currentVariable['VariableId']) == $currentVariable['StopState']) {
