@@ -312,27 +312,10 @@ class AutoOff extends IPSModule {
 			return;
 		}
 		
-		$stopVariablesJson = $this->ReadPropertyString("StopVariables");
-		$stopVariables = json_decode($stopVariablesJson);
-		
-		if (is_array($stopVariables)) {
-		
-			$stopConditionFound = false;
-		
-			foreach($stopVariables as $currentVariable) {
-				
-				if ( (GetValue($currentVariable->VariableId) == $currentVariable->StopState) && ($currentVariable->StopTurnOn) ) {
-				
-					$this->LogMessage("Stop Condition hit for variable " . $currentVariable->VariableId, "DEBUG");
-					$stopConditionFound = true;
-				}
-			}
+		if ( $this->CheckStopConditions("TurnOn") ) {
 			
-			if ($stopConditionFound) {
-				
-				$this->LogMessage("Ignoring Trigger because at least on stop condition was hit", "DEBUG");
-				return;
-			}
+			$this->LogMessage("Ignoring Trigger because step conditions are met", "DEBUG");
+			return;
 		}
 		
 		$this->LogMessage("Triggering Timer", "DEBUG");
@@ -367,6 +350,12 @@ class AutoOff extends IPSModule {
 		if (! GetValue($this->GetIDForIdent("DetectionEnabled"))) {
 			
 			$this->LogMessage("Ignoring Timeout because Detection is off", "DEBUG");
+			return;
+		}
+		
+		if ($this->CheckStopConditions("TurnOff") ) {
+			
+			$this->LogMessage("Ignoring Timeout because a stop condition was met", "DEBUG");
 			return;
 		}
 		
@@ -415,6 +404,44 @@ class AutoOff extends IPSModule {
 			
 			RequestAction($this->ReadPropertyInteger("TargetStatusVariableId"), false);
 		}
+	}
+	
+	protected function CheckStopConditions($mode) {
+		
+		$stopVariablesJson = $this->ReadPropertyString("StopVariables");
+		$stopVariables = json_decode($stopVariablesJson);
+		
+		if (is_array($stopVariables)) {
+		
+			$stopConditionFound = false;
+		
+			foreach($stopVariables as $currentVariable) {
+				
+				if (GetValue($currentVariable->VariableId) == $currentVariable->StopState) {
+				
+					if ( ($mode == "TurnOn") && ($currentVariable->StopTurnOn) ) {
+						
+						$this->LogMessage("Stop Condition hit for variable " . $currentVariable->VariableId, "DEBUG");
+						$stopConditionFound = true;
+					}
+					
+					if ( ($mode == "TurnOff") && ($currentVariable->StopTurnOff) ) {
+						
+						$this->LogMessage("Stop Condition hit for variable " . $currentVariable->VariableId, "DEBUG");
+						$stopConditionFound = true;
+					}
+				}
+			}
+			
+			if ($stopConditionFound) {
+				
+				// $this->LogMessage("Ignoring Trigger because at least on stop condition was hit", "DEBUG");
+				return true;
+			}
+		}
+
+		// Return false if no stop condition was hit
+		return false;
 	}
 
 }
