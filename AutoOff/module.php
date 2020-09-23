@@ -467,19 +467,22 @@ class AutoOff extends IPSModule {
 		$triggerVariables = $this->GetTriggerVariables();
 		
 		$isTriggerVariable = false;
+		
+		if ($triggerVariables) {
 			
-		foreach ($triggerVariables as $currentVariable) {
-			
-			if ($variableId == $currentVariable['VariableId']) {
+			foreach ($triggerVariables as $currentVariable) {
 				
-				$isTriggerVariable = true;
-				break;
+				if ($variableId == $currentVariable['VariableId']) {
+					
+					$isTriggerVariable = true;
+					break;
+				}
 			}
-		}
-			
-		if ($isTriggerVariable) {
-			
-			return true;
+				
+			if ($isTriggerVariable) {
+				
+				return true;
+			}
 		}
 
 		return false;
