@@ -488,7 +488,7 @@ class AutoOff extends IPSModule {
 	protected function GetStopVariables() {
 		
 		$stopVariablesJson = $this->ReadPropertyString("StopVariables");
-		$stopVariables = json_decode($stopVariablesJson);
+		$stopVariables = json_decode($stopVariablesJson, true);
 		
 		if (! is_array($stopVariables)) {
 			
