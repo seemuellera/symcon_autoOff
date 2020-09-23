@@ -146,6 +146,20 @@ class AutoOff extends IPSModule {
 				"width" => "100px",
 				"edit" => Array("type" => "CheckBox"),
 				"add" => true
+			),
+			Array(
+				"caption" => "Stop turn on",
+				"name" => "StopTurnOn",
+				"width" => "100px",
+				"edit" => Array("type" => "CheckBox"),
+				"add" => true
+			),
+			Array(
+				"caption" => "Stop turn off",
+				"name" => "StopTurnOn",
+				"width" => "100px",
+				"edit" => Array("type" => "CheckBox"),
+				"add" => true
 			)
 		);
 		$form['elements'][] = Array(
