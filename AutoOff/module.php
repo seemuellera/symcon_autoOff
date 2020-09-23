@@ -321,7 +321,7 @@ class AutoOff extends IPSModule {
 		
 			foreach($stopVariables as $currentVariable) {
 				
-				if (GetValue($currentVariable->VariableId) == $currentVariable->StopState) {
+				if ( (GetValue($currentVariable->VariableId) == $currentVariable->StopState) && ($currentVariable->StopTurnOn) ) {
 				
 					$this->LogMessage("Stop Condition hit for variable " . $currentVariable->VariableId, "DEBUG");
 					$stopConditionFound = true;
