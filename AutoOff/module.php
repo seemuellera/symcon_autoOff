@@ -447,7 +447,7 @@ class AutoOff extends IPSModule {
 			return false;
 		}
 		
-		if (count($triggerVariables == 0) ) {
+		if (count($triggerVariables) == 0 ) {
 			
 			return false;
 		}
