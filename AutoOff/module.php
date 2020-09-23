@@ -75,16 +75,20 @@ class AutoOff extends IPSModule {
 		$newInterval = $this->ReadPropertyInteger("RefreshInterval") * 1000;
 		$this->SetTimerInterval("RefreshInformation", $newInterval);
 		
-		$triggerVariablesJson = $this->ReadPropertyString("TriggerVariables");
-		$triggerVariables = json_decode($triggerVariablesJson);
+		$triggerVariables = $this->GetTriggerVariables();
 		
-		if (is_array($triggerVariables)) {
-		
-			foreach($triggerVariables as $currentVariable) {
-				
-				$this->LogMessage("Registering Message Sink for Variable ID " . $currentVariable->VariableId, "DEBUG");
-				$this->RegisterMessage($currentVariable->VariableId, VM_UPDATE);
-			}
+		foreach($triggerVariables as $currentVariable) {
+			
+			$this->LogMessage("Registering Message Sink for Variable ID " . $currentVariable->VariableId, "DEBUG");
+			$this->RegisterMessage($currentVariable->VariableId, VM_UPDATE);
+		}
+
+		$stopVariables = $this->GetStopVariables();
+		foreach ($stopVariables as $currentStopVariable) {
+			
+			$this->LogMessage("Registering Message Sink for Variable ID " . $currentStopVariable->VariableId, "DEBUG");
+			$this->RegisterMessage($currentStopVariable->VariableId, VM_UPDATE);
+			
 		}
 		
 		// Also register the target variable to keep track of change events
@@ -279,29 +283,19 @@ class AutoOff extends IPSModule {
 			return;
 		}
 		
-		$triggerVariablesJson = $this->ReadPropertyString("TriggerVariables");
-		$triggerVariables = json_decode($triggerVariablesJson);
+		if ($this->IsTriggerVariable($SenderId)) {
+			
+			$this->LogMessage("Triggered by Variable $SenderId","DEBUG");
+			$this->Trigger();
+			return;
+		}
 		
-		if (is_array($triggerVariables)) {
+		if ($this->IsStopVariable($SenderId)) {
 			
-			$isTriggerVariable = false;
-			
-			foreach ($triggerVariables as $currentVariable) {
-				
-				if ($SenderId == $currentVariable->VariableId) {
-					
-					$isTriggerVariable = true;
-					break;
-				}
-			}
-			
-			if ($isTriggerVariable) {
-				
-				$this->LogMessage("Triggered by Variable $SenderId","DEBUG");
-				$this->Trigger();
-				return;
-			}
-		}		
+			$this->LogMessage("Timeout Check because of change in stop variable $SenderId","DEBUG");
+			$this->CheckTimeout();
+			return;
+		}	
 	}
 	
 	public function Trigger() {
@@ -384,6 +378,8 @@ class AutoOff extends IPSModule {
 			
 			$timeDelta = time() - $timestampTimeout;
 			$this->LogMessage("Timer has not yet expired, $timeDelta seconds left", "DEBUG");
+			// Set the timer to a minute interval
+			$this->SetTimerInterval("CheckTimeout", 60 * 1000);
 		}
 	}
 	
@@ -441,6 +437,88 @@ class AutoOff extends IPSModule {
 		}
 
 		// Return false if no stop condition was hit
+		return false;
+	}
+	
+	protected function GetTriggerVariables() {
+		
+		$triggerVariablesJson = $this->ReadPropertyString("TriggerVariables");
+		$triggerVariables = json_decode($triggerVariablesJson);
+		
+		if (! is_array($triggerVariables) ) {
+			
+			return false;
+		}
+		
+		if (count($triggerVariables == 0) ) {
+			
+			return false;
+		}
+		
+		return $triggerVariables;
+	}
+	
+	protected function IsTriggerVariable($variableId) {
+		
+		$triggerVariables = $this->GetTriggerVariables();
+		
+		$isTriggerVariable = false;
+			
+		foreach ($triggerVariables as $currentVariable) {
+			
+			if ($variableId == $currentVariable->VariableId) {
+				
+				$isTriggerVariable = true;
+				break;
+			}
+		}
+			
+		if ($isTriggerVariable) {
+			
+			return true;
+		}
+
+		return false;
+	}
+
+	protected function GetStopVariables() {
+		
+		$stopVariablesJson = $this->ReadPropertyString("StopVariables");
+		$stopVariables = json_decode($stopVariablesJson);
+		
+		if (! is_array($stopVariables)) {
+			
+			return false;
+		}
+		
+		if (count($stopVariables) == 0) {
+			
+			return false;
+		}
+		
+		return $stopVariables;
+	}
+	
+	protected function IsStopVariable($variableId) {
+		
+		$stopVariables = $this->GetStopVariables();
+		
+		$isStopVariable = false;
+			
+		foreach ($stopVariables as $currentVariable) {
+				
+			if ($variableId == $currentVariable->VariableId) {
+				
+				$isStopVariable = true;
+				break;
+			}
+		}
+		
+		if ($isStopVariable) {
+			
+			return true;
+		}
+
 		return false;
 	}
 
