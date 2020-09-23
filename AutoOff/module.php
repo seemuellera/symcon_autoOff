@@ -156,7 +156,7 @@ class AutoOff extends IPSModule {
 			),
 			Array(
 				"caption" => "Stop turn off",
-				"name" => "StopTurnOn",
+				"name" => "StopTurnOff",
 				"width" => "100px",
 				"edit" => Array("type" => "CheckBox"),
 				"add" => true
