@@ -77,18 +77,25 @@ class AutoOff extends IPSModule {
 		
 		$triggerVariables = $this->GetTriggerVariables();
 		
-		foreach($triggerVariables as $currentVariable) {
+		if ($triggerVariables) {
 			
-			$this->LogMessage("Registering Message Sink for Variable ID " . $currentVariable['VariableId'], "DEBUG");
-			$this->RegisterMessage($currentVariable['VariableId'], VM_UPDATE);
+			foreach($triggerVariables as $currentVariable) {
+				
+				$this->LogMessage("Registering Message Sink for Variable ID " . $currentVariable['VariableId'], "DEBUG");
+				$this->RegisterMessage($currentVariable['VariableId'], VM_UPDATE);
+			}
 		}
 
 		$stopVariables = $this->GetStopVariables();
-		foreach ($stopVariables as $currentStopVariable) {
+		
+		if ($stopVariables) {
 			
-			$this->LogMessage("Registering Message Sink for Variable ID " . $currentStopVariable['VariableId'], "DEBUG");
-			$this->RegisterMessage($currentStopVariable['VariableId'], VM_UPDATE);
-			
+			foreach ($stopVariables as $currentStopVariable) {
+				
+				$this->LogMessage("Registering Message Sink for Variable ID " . $currentStopVariable['VariableId'], "DEBUG");
+				$this->RegisterMessage($currentStopVariable['VariableId'], VM_UPDATE);
+				
+			}
 		}
 		
 		// Also register the target variable to keep track of change events
