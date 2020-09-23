@@ -79,15 +79,15 @@ class AutoOff extends IPSModule {
 		
 		foreach($triggerVariables as $currentVariable) {
 			
-			$this->LogMessage("Registering Message Sink for Variable ID " . $currentVariable->VariableId, "DEBUG");
-			$this->RegisterMessage($currentVariable->VariableId, VM_UPDATE);
+			$this->LogMessage("Registering Message Sink for Variable ID " . $currentVariable['VariableId'], "DEBUG");
+			$this->RegisterMessage($currentVariable['VariableId'], VM_UPDATE);
 		}
 
 		$stopVariables = $this->GetStopVariables();
 		foreach ($stopVariables as $currentStopVariable) {
 			
-			$this->LogMessage("Registering Message Sink for Variable ID " . $currentStopVariable->VariableId, "DEBUG");
-			$this->RegisterMessage($currentStopVariable->VariableId, VM_UPDATE);
+			$this->LogMessage("Registering Message Sink for Variable ID " . $currentStopVariable['VariableId'], "DEBUG");
+			$this->RegisterMessage($currentStopVariable['VariableId'], VM_UPDATE);
 			
 		}
 		
@@ -404,37 +404,34 @@ class AutoOff extends IPSModule {
 	
 	protected function CheckStopConditions($mode) {
 		
-		$stopVariablesJson = $this->ReadPropertyString("StopVariables");
-		$stopVariables = json_decode($stopVariablesJson);
+		$stopVariables = $this->GetStopVariables();
 		
-		if (is_array($stopVariables)) {
-		
-			$stopConditionFound = false;
-		
-			foreach($stopVariables as $currentVariable) {
-				
-				if (GetValue($currentVariable->VariableId) == $currentVariable->StopState) {
-				
-					if ( ($mode == "TurnOn") && ($currentVariable->StopTurnOn) ) {
-						
-						$this->LogMessage("Stop Condition hit for variable " . $currentVariable->VariableId, "DEBUG");
-						$stopConditionFound = true;
-					}
+		$stopConditionFound = false;
+	
+		foreach($stopVariables as $currentVariable) {
+			
+			if (GetValue($currentVariable['VariableId']) == $currentVariable['StopState']) {
+			
+				if ( ($mode == "TurnOn") && ($currentVariable['StopTurnOn']) ) {
 					
-					if ( ($mode == "TurnOff") && ($currentVariable->StopTurnOff) ) {
-						
-						$this->LogMessage("Stop Condition hit for variable " . $currentVariable->VariableId, "DEBUG");
-						$stopConditionFound = true;
-					}
+					$this->LogMessage("Stop Condition hit for variable " . $currentVariable['VariableId'], "DEBUG");
+					$stopConditionFound = true;
+				}
+				
+				if ( ($mode == "TurnOff") && ($currentVariable['StopTurnOff']) ) {
+					
+					$this->LogMessage("Stop Condition hit for variable " . $currentVariable['VariableId'], "DEBUG");
+					$stopConditionFound = true;
 				}
 			}
-			
-			if ($stopConditionFound) {
-				
-				// $this->LogMessage("Ignoring Trigger because at least on stop condition was hit", "DEBUG");
-				return true;
-			}
 		}
+		
+		if ($stopConditionFound) {
+			
+			// $this->LogMessage("Ignoring Trigger because at least on stop condition was hit", "DEBUG");
+			return true;
+		}
+		
 
 		// Return false if no stop condition was hit
 		return false;
@@ -443,7 +440,7 @@ class AutoOff extends IPSModule {
 	protected function GetTriggerVariables() {
 		
 		$triggerVariablesJson = $this->ReadPropertyString("TriggerVariables");
-		$triggerVariables = json_decode($triggerVariablesJson);
+		$triggerVariables = json_decode($triggerVariablesJson, true);
 		
 		if (! is_array($triggerVariables) ) {
 			
@@ -466,7 +463,7 @@ class AutoOff extends IPSModule {
 			
 		foreach ($triggerVariables as $currentVariable) {
 			
-			if ($variableId == $currentVariable->VariableId) {
+			if ($variableId == $currentVariable['VariableId']) {
 				
 				$isTriggerVariable = true;
 				break;
@@ -507,7 +504,7 @@ class AutoOff extends IPSModule {
 			
 		foreach ($stopVariables as $currentVariable) {
 				
-			if ($variableId == $currentVariable->VariableId) {
+			if ($variableId == $currentVariable['VariableId']) {
 				
 				$isStopVariable = true;
 				break;
