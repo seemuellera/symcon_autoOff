@@ -386,7 +386,7 @@ class AutoOff extends IPSModule {
 			$timeDelta = time() - $timestampTimeout;
 			$this->LogMessage("Timer has not yet expired, $timeDelta seconds left", "DEBUG");
 			// Set the timer to a minute interval
-			$this->SetTimerInterval("CheckTimeout", 10 * 60 * 1000);
+			// $this->SetTimerInterval("CheckTimeout", 10 * 60 * 1000);
 		}
 	}
 	
