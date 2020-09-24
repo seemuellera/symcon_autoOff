@@ -372,7 +372,7 @@ class AutoOff extends IPSModule {
 				
 				if (GetValue($this->ReadPropertyInteger("TargetIntensityVariableId")) != $this->ReadPropertyInteger("TargetIntensity")) {
 					
-					$this->LogMessage("Stopping AutoOff timer but the target device will not be switched off as the Intensity level was manually modified");
+					$this->LogMessage("Stopping AutoOff timer but the target device will not be switched off as the Intensity level was manually modified","DEBUG");
 					return;
 				}	
 			}
