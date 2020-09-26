@@ -332,6 +332,15 @@ class AutoOff extends IPSModule {
 			return;
 		}
 		
+		$timestampBlackout = GetValue($this->GetIDForIdent("LastAutoOff")) + $this->ReadPropertyInteger("BlackoutTime");
+		$deltaBlackout = $timestampBlackout - time();
+		
+		if ($deltaBlackout > 0) {
+			
+			$this->LogMessage("Ignoring Trigger because blackout is still active: $deltaBlackout sec","DEBUG");
+			return;
+		}
+		
 		$this->LogMessage("Triggering Timer", "DEBUG");
 		SetValue($this->GetIDForIdent("LastTrigger"), time());
 		
