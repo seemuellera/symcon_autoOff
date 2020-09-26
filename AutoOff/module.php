@@ -25,7 +25,7 @@ class AutoOff extends IPSModule {
 		$this->RegisterPropertyInteger("TargetIntensityVariableId",0);
 		$this->RegisterPropertyInteger("TargetIntensity",0);
 		$this->RegisterPropertyInteger("LastAutoOff",0);
-		$this->RegisterPropertyInteger("BlackoutTime",30);
+		$this->RegisterPropertyInteger("BlackoutTime",5);
 		$this->RegisterPropertyBoolean("SetIntensity",false);
 		$this->RegisterPropertyBoolean("AbortTimerIfIntensityWasModified",false);
 		$this->RegisterPropertyBoolean("DebugOutput",false);
