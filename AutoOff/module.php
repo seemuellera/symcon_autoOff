@@ -24,7 +24,6 @@ class AutoOff extends IPSModule {
 		$this->RegisterPropertyInteger("TargetStatusVariableId",0);
 		$this->RegisterPropertyInteger("TargetIntensityVariableId",0);
 		$this->RegisterPropertyInteger("TargetIntensity",0);
-		$this->RegisterPropertyInteger("LastAutoOff",0);
 		$this->RegisterPropertyInteger("BlackoutTime",5);
 		$this->RegisterPropertyBoolean("SetIntensity",false);
 		$this->RegisterPropertyBoolean("AbortTimerIfIntensityWasModified",false);
@@ -52,6 +51,7 @@ class AutoOff extends IPSModule {
 		$this->RegisterVariableBoolean("Status","Status","~Switch");
 		$this->RegisterVariableBoolean("DetectionEnabled","Motion Detection Enabled","~Switch");
 		$this->RegisterVariableInteger("LastTrigger","Last Trigger","~UnixTimestamp");
+		$this->RegisterVariableInteger("LastAutoOff","Last AutoOff","~UnixTimestamp");
 		$this->RegisterVariableInteger("Timeout","Timeout","AUTOOFF.Timeout");
 
 		// Default Actions
@@ -121,7 +121,7 @@ class AutoOff extends IPSModule {
 		$form['elements'][] = Array("type" => "CheckBox", "name" => "DebugOutput", "caption" => "Enable Debug Output");
 		
 		$form['elements'][] = Array("type" => "SelectVariable", "name" => "TargetStatusVariableId", "caption" => "Status variable of target device");
-		$form['elements'][] = Array("type" => "NumberSpinner", "name" => "LastAutoOff", "caption" => "Blackout time after last AutoOff");
+		$form['elements'][] = Array("type" => "NumberSpinner", "name" => "BlackoutTime", "caption" => "Blackout time after last AutoOff");
 		$form['elements'][] = Array("type" => "CheckBox", "name" => "SetIntensity", "caption" => "Dim to specific intensity instead of switching on");
 		$form['elements'][] = Array("type" => "SelectVariable", "name" => "TargetIntensityVariableId", "caption" => "Intensity variable of target device");
 		$form['elements'][] = Array("type" => "NumberSpinner", "name" => "TargetIntensity", "caption" => "Intensity level");
@@ -223,7 +223,7 @@ class AutoOff extends IPSModule {
 			}
 		}
 		
-		$timestampBlackout = $this->ReadPropertyInteger("LastAutoOff") + $this->ReadPropertyInteger("BlackoutTime");
+		$timestampBlackout = GetValue($this->GetIDForIdent("LastAutoOff")) + $this->ReadPropertyInteger("BlackoutTime");
 		$deltaBlackout = $timestampBlackout - time();
 		
 		if ($deltaBlackout > 0) {
@@ -392,7 +392,7 @@ class AutoOff extends IPSModule {
 			
 			$this->LogMessage("Turning off device","DEBUG");
 			RequestAction($this->ReadPropertyInteger("TargetStatusVariableId"), false);
-			SetValue($this->ReadPropertyInteger("LastAutoOff"), time() );
+			SetValue($this->GetIDForIdent("LastAutoOff"), time() );
 			
 		}
 		else {
@@ -420,7 +420,7 @@ class AutoOff extends IPSModule {
 		if (GetValue($this->ReadPropertyInteger("TargetStatusVariableId"))) {
 			
 			RequestAction($this->ReadPropertyInteger("TargetStatusVariableId"), false);
-			SetValue($this->ReadPropertyInteger("LastAutoOff"), time() );
+			SetValue($this->GetIDForIdent("LastAutoOff"), time() );
 		}
 	}
 	
