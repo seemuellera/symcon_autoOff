@@ -24,6 +24,8 @@ class AutoOff extends IPSModule {
 		$this->RegisterPropertyInteger("TargetStatusVariableId",0);
 		$this->RegisterPropertyInteger("TargetIntensityVariableId",0);
 		$this->RegisterPropertyInteger("TargetIntensity",0);
+		$this->RegisterPropertyInteger("LastAutoOff",0);
+		$this->RegisterPropertyInteger("BlackoutTime",0);
 		$this->RegisterPropertyBoolean("SetIntensity",false);
 		$this->RegisterPropertyBoolean("AbortTimerIfIntensityWasModified",false);
 		$this->RegisterPropertyBoolean("DebugOutput",false);
@@ -119,6 +121,7 @@ class AutoOff extends IPSModule {
 		$form['elements'][] = Array("type" => "CheckBox", "name" => "DebugOutput", "caption" => "Enable Debug Output");
 		
 		$form['elements'][] = Array("type" => "SelectVariable", "name" => "TargetStatusVariableId", "caption" => "Status variable of target device");
+		$form['elements'][] = Array("type" => "NumberSpinner", "name" => "LastAutoOff", "caption" => "Blackout time after last AutoOff");
 		$form['elements'][] = Array("type" => "CheckBox", "name" => "SetIntensity", "caption" => "Dim to specific intensity instead of switching on");
 		$form['elements'][] = Array("type" => "SelectVariable", "name" => "TargetIntensityVariableId", "caption" => "Intensity variable of target device");
 		$form['elements'][] = Array("type" => "NumberSpinner", "name" => "TargetIntensity", "caption" => "Intensity level");
@@ -186,6 +189,7 @@ class AutoOff extends IPSModule {
 		// Add the buttons for the test center
 		$form['actions'][] = Array(	"type" => "Button", "label" => "Refresh", "onClick" => 'AUTOOFF_RefreshInformation($id);');
 		$form['actions'][] = Array(	"type" => "Button", "label" => "Trigger On", "onClick" => 'AUTOOFF_Trigger($id);');
+		$form['actions'][] = Array(	"type" => "Button", "label" => "Abort", "onClick" => 'AUTOOFF_Abort($id);');
 
 		// Return the completed form
 		return json_encode($form);
