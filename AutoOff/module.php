@@ -23,10 +23,14 @@ class AutoOff extends IPSModule {
 		$this->RegisterPropertyInteger("RefreshInterval",0);
 		$this->RegisterPropertyInteger("TargetStatusVariableId",0);
 		$this->RegisterPropertyInteger("TargetIntensityVariableId",0);
+		$this->RegisterPropertyInteger("TargetColorVariableId",0);
 		$this->RegisterPropertyInteger("TargetIntensity",0);
+		$this->RegisterPropertyInteger("TargetColor",0);
 		$this->RegisterPropertyInteger("BlackoutTime",5);
 		$this->RegisterPropertyBoolean("SetIntensity",false);
 		$this->RegisterPropertyBoolean("AbortTimerIfIntensityWasModified",false);
+		$this->RegisterPropertyBoolean("SetColor",false);
+		$this->RegisterPropertyBoolean("AbortTimerIfColorWasModified",false);
 		$this->RegisterPropertyBoolean("DebugOutput",false);
 		$this->RegisterPropertyString("TriggerVariables", "");
 		$this->RegisterPropertyString("StopVariables", "");
@@ -126,6 +130,10 @@ class AutoOff extends IPSModule {
 		$form['elements'][] = Array("type" => "SelectVariable", "name" => "TargetIntensityVariableId", "caption" => "Intensity variable of target device");
 		$form['elements'][] = Array("type" => "NumberSpinner", "name" => "TargetIntensity", "caption" => "Intensity level");
 		$form['elements'][] = Array("type" => "CheckBox", "name" => "AbortTimerIfIntensityWasModified", "caption" => "Abort the Auto off timer if the intensity was modified manually during runtime");
+		$form['elements'][] = Array("type" => "CheckBox", "name" => "SetColor", "caption" => "Change to specific color instead of switching on");
+		$form['elements'][] = Array("type" => "SelectVariable", "name" => "TargetColorVariableId", "caption" => "color variable of target device");
+		$form['elements'][] = Array("type" => "NumberSpinner", "name" => "TargetColor", "caption" => "Target Color");
+		$form['elements'][] = Array("type" => "CheckBox", "name" => "AbortTimerIfColorWasModified", "caption" => "Abort the Auto off timer if the Color was modified manually during runtime");
 		
 		$sensorListColumns = Array(
 			Array(
@@ -351,15 +359,23 @@ class AutoOff extends IPSModule {
 		
 		if (! GetValue($this->ReadPropertyInteger("TargetStatusVariableId"))) {
 			
-			if ($this->ReadPropertyBoolean("SetIntensity")) {
+			if ($this->ReadPropertyBoolean("SetColor")) {
 				
-				$this->LogMessage("Dimming target device to intensity level " . $this->ReadPropertyInteger("TargetIntensity"),"DEBUG");
-				RequestAction($this->ReadPropertyInteger("TargetIntensityVariableId"), $this->ReadPropertyInteger("TargetIntensity"));				
+				$this->LogMessage("Changing target device to color " . $this->ReadPropertyInteger("TargetColor"),"DEBUG");
+				RequestAction($this->ReadPropertyInteger("TargetColorVariableId"), $this->ReadPropertyInteger("TargetColor"));				
 			}
 			else {
 			
-				$this->LogMessage("Switching on target device","DEBUG");
-				RequestAction($this->ReadPropertyInteger("TargetStatusVariableId"), true);
+				if ($this->ReadPropertyBoolean("SetIntensity")) {
+					
+					$this->LogMessage("Dimming target device to intensity level " . $this->ReadPropertyInteger("TargetIntensity"),"DEBUG");
+					RequestAction($this->ReadPropertyInteger("TargetIntensityVariableId"), $this->ReadPropertyInteger("TargetIntensity"));				
+				}
+				else {
+				
+					$this->LogMessage("Switching on target device","DEBUG");
+					RequestAction($this->ReadPropertyInteger("TargetStatusVariableId"), true);
+				}
 			}
 		}
 		else {
@@ -389,6 +405,15 @@ class AutoOff extends IPSModule {
 			$this->LogMessage("Timer has expired", "DEBUG");
 			$this->SetTimerInterval("CheckTimeout", 0);
 			SetValue($this->GetIDForIdent("Status"), false);
+			
+			if ($this->ReadPropertyBoolean("AbortTimerIfColorWasModified")) {
+				
+				if (GetValue($this->ReadPropertyInteger("TargetColorVariableId")) != $this->ReadPropertyInteger("TargetColor")) {
+					
+					$this->LogMessage("Stopping AutoOff timer but the target device will not be switched off as the color was manually modified","DEBUG");
+					return;
+				}	
+			}
 			
 			if ($this->ReadPropertyBoolean("AbortTimerIfIntensityWasModified")) {
 				
