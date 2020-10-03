@@ -335,14 +335,22 @@ class AutoOff extends IPSModule {
 		if ($this->IsTriggerVariable($SenderId)) {
 			
 			$this->LogMessage("Triggered by Variable $SenderId","DEBUG");
+			
 			if ($Data[1]) {
 				$this->LogMessage("Variable was changed","DEBUG");
+				if ($this->GetTriggerType($SenderId) == "OnChange") {
+					
+					$this->Trigger();
+				}
 			}
 			else {
 				
 				$this->LogMessage("Variable was touched","DEBUG");
+				if ($this->GetTriggerType($SenderId) == "OnUpdate") {
+					
+					$this->Trigger();
+				}
 			}
-			$this->Trigger();
 			return;
 		}
 		
@@ -587,6 +595,29 @@ class AutoOff extends IPSModule {
 
 		return false;
 	}
+	
+	protected function GetTriggerType($variableId) {
+		
+		$triggerVariables = $this->GetTriggerVariables();
+		
+		if (! $triggerVariables) {
+			
+			return false;
+		}
+		
+		$triggerType = false;
+				
+		foreach ($triggerVariables as $currentVariable) {
+			
+			if ($variableId == $currentVariable['VariableId']) {
+				
+				$triggerType = $currentVariable['TriggerType'];
+				break;
+			}
+		}
+			
+		return $triggerType;
+	}	
 
 	protected function GetStopVariables() {
 		
