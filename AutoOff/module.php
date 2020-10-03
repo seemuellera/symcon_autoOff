@@ -305,7 +305,7 @@ class AutoOff extends IPSModule {
 	
 	public function MessageSink($TimeStamp, $SenderId, $Message, $Data) {
 	
-		$this->LogMessage("$TimeStamp - $SenderId - $Message", "DEBUG");
+		$this->LogMessage("$TimeStamp - $SenderId - $Message - " . implode(" ; ",$Data), "DEBUG");
 		
 		if ($SenderId == $this->ReadPropertyInteger("TargetStatusVariableId")) {
 			
