@@ -197,7 +197,9 @@ class AutoOff extends IPSModule {
 		// Add the buttons for the test center
 		$form['actions'][] = Array(	"type" => "Button", "label" => "Refresh", "onClick" => 'AUTOOFF_RefreshInformation($id);');
 		$form['actions'][] = Array(	"type" => "Button", "label" => "Trigger On", "onClick" => 'AUTOOFF_Trigger($id);');
-		$form['actions'][] = Array(	"type" => "Button", "label" => "Abort", "onClick" => 'AUTOOFF_Abort($id);');
+		$form['actions'][] = Array(	"type" => "Button", "label" => "Abort Timer", "onClick" => 'AUTOOFF_Abort($id);');
+		$form['actions'][] = Array(	"type" => "Button", "label" => "Enable Detection", "onClick" => 'AUTOOFF_Enable($id);');
+		$form['actions'][] = Array(	"type" => "Button", "label" => "Disable Detection", "onClick" => 'AUTOOFF_Disable($id);');
 
 		// Return the completed form
 		return json_encode($form);
@@ -303,7 +305,7 @@ class AutoOff extends IPSModule {
 	
 	public function MessageSink($TimeStamp, $SenderId, $Message, $Data) {
 	
-		// $this->LogMessage("$TimeStamp - $SenderId - $Message", "DEBUG");
+		$this->LogMessage("$TimeStamp - $SenderId - $Message", "DEBUG");
 		
 		if ($SenderId == $this->ReadPropertyInteger("TargetStatusVariableId")) {
 			
@@ -436,6 +438,24 @@ class AutoOff extends IPSModule {
 			// Set the timer to a minute interval
 			// $this->SetTimerInterval("CheckTimeout", 10 * 60 * 1000);
 		}
+	}
+	
+	protected function UpdateValue($variableId, $newValue) {
+		
+		if (GetValue($variableId) != $newValue) {
+			
+			SetValue($variableId, $newValue);
+		}
+	}
+	
+	public function Enable() {
+		
+		$this->UpdateValue($this->GetIDForIdent("DetectionEnabled"), true);
+	}
+	
+	public function Disable() {
+		
+		$this->UpdateValue($this->GetIDForIdent("DetectionEnabled"), true);
 	}
 	
 	public function Abort() {
