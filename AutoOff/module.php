@@ -142,6 +142,25 @@ class AutoOff extends IPSModule {
 				"width" => "650px",
 				"edit" => Array("type" => "SelectVariable"),
 				"add" => 0
+			),
+			Array(
+				"caption" => "Trigger Type",
+				"name" => "TriggerType",
+				"width" => "auto",
+				"add" => "OnChange",
+				"edit" => Array(
+							"type" => "Select",
+							"options" => Array(
+									Array(
+										"caption" => "OnUpdate - AutoOff gets triggered when the variable get's updated",
+										"value" => "OnUpdate"
+									),
+									Array(
+										"caption" => "OnChange - AutoOff gets triggered when the value of the varible changes",
+										"value" => "OnChange"
+									)
+								)
+							)
 			)
 		);
 		$form['elements'][] = Array(
