@@ -316,6 +316,13 @@ class AutoOff extends IPSModule {
 		if ($this->IsTriggerVariable($SenderId)) {
 			
 			$this->LogMessage("Triggered by Variable $SenderId","DEBUG");
+			if ($Data[1]) {
+				$this->LogMessage("Variable was changed","DEBUG");
+			}
+			else {
+				
+				$this->LogMessage("Variable was touched","DEBUG");
+			}
 			$this->Trigger();
 			return;
 		}
