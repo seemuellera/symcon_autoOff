@@ -364,7 +364,7 @@ class AutoOff extends IPSModule {
 			// Only check if things have changed
 			if ($Data[1]) {
 			
-				if (! $this->CheckStopConditions() ) {
+				if (! $this->CheckStopConditions("TurnOff") ) {
 					
 					// No stop conditions are active anymore
 					SetValue($this->GetIDForIdent("LastStopConditionCleared"),time());
@@ -373,9 +373,10 @@ class AutoOff extends IPSModule {
 					$this->CheckTimeout();
 					return;
 				}
-				else {
+				
+				if (! $this->CheckStopConditions("TurnOn") ) {
 					
-					SetValue($this->GetIDForIdent("LastStopConditionMet"),time());
+					SetValue($this->GetIDForIdent("LastStopConditionCleared"), time());
 				}
 			}
 		}	
@@ -579,6 +580,7 @@ class AutoOff extends IPSModule {
 		if ($stopConditionFound) {
 			
 			// $this->LogMessage("Ignoring Trigger because at least on stop condition was hit", "DEBUG");
+			SetValue($this->GetIDForIdent("LastStopConditionMet"), time());
 			return true;
 		}
 		
