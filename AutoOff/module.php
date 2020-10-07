@@ -27,6 +27,7 @@ class AutoOff extends IPSModule {
 		$this->RegisterPropertyInteger("TargetIntensity",0);
 		$this->RegisterPropertyInteger("TargetColor",0);
 		$this->RegisterPropertyInteger("BlackoutTime",5);
+		$this->RegisterPropertyInteger("StopVariablesFollowUpTime",0);
 		$this->RegisterPropertyBoolean("SetIntensity",false);
 		$this->RegisterPropertyBoolean("AbortTimerIfIntensityWasModified",false);
 		$this->RegisterPropertyBoolean("SetColor",false);
@@ -172,6 +173,8 @@ class AutoOff extends IPSModule {
 			"delete" => true,
 			"rowCount" => 5
 		);
+		
+		$form['elements'][] = Array("type" => "NumberSpinner", "name" => "StopVariablesFollowUpTime", "caption" => "Follow Up time when stop condition is reached (turn on happens X seconds later.");
 		
 		$stopVariablesColumns = Array(
 			Array(
