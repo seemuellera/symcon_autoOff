@@ -470,6 +470,7 @@ class AutoOff extends IPSModule {
 			// The check was triggered between the expiration and the follow-up time
 			$this->LogMessage("Timer has expired but Stop Variable cooldown is in place.","DEBUG");
 			$this->SetTimerInterval("CheckTimeout", ($this->ReadPropertyInteger("StopVariablesFollowUpTime") + 2) * 1000);
+			return;
 		}
 		
 		if ($timestampTimeout <= time()) {
