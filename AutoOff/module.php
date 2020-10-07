@@ -57,6 +57,8 @@ class AutoOff extends IPSModule {
 		$this->RegisterVariableBoolean("DetectionEnabled","Motion Detection Enabled","~Switch");
 		$this->RegisterVariableInteger("LastTrigger","Last Trigger","~UnixTimestamp");
 		$this->RegisterVariableInteger("LastAutoOff","Last AutoOff","~UnixTimestamp");
+		$this->RegisterVariableInteger("LastStopConditionMet","Last Stop Condition met","~UnixTimestamp");
+		$this->RegisterVariableInteger("LastStopConditionCleared","Last Stop Condition cleared","~UnixTimestamp");
 		$this->RegisterVariableInteger("Timeout","Timeout","AUTOOFF.Timeout");
 
 		// Default Actions
@@ -359,9 +361,23 @@ class AutoOff extends IPSModule {
 		
 		if ($this->IsStopVariable($SenderId)) {
 			
-			$this->LogMessage("Timeout Check because of change in stop variable $SenderId","DEBUG");
-			$this->CheckTimeout();
-			return;
+			// Only check if things have changed
+			if ($Data[1]) {
+			
+				if (! $this->CheckStopConditions() ) {
+					
+					// No stop conditions are active anymore
+					SetValue($this->GetIDForIdent("LastStopConditionCleared"),time());
+					
+					$this->LogMessage("Timeout Check because of change in stop variable $SenderId","DEBUG");
+					$this->CheckTimeout();
+					return;
+				}
+				else {
+					
+					SetValue($this->GetIDForIdent("LastStopConditionMet"),time());
+				}
+			}
 		}	
 	}
 	
@@ -441,7 +457,7 @@ class AutoOff extends IPSModule {
 		
 		if ($this->ReadPropertyInteger("StopVariablesFollowUpTime") != 0) {
 			
-			$timestampTimeoutFollowUp = $timestampTimeout + $this->ReadPropertyInteger("StopVariablesFollowUpTime");
+			$timestampTimeoutFollowUp = GetValue($this->GetIDForIdent("LastStopConditionCleared")) + $this->ReadPropertyInteger("StopVariablesFollowUpTime");
 		}
 		else {
 			
