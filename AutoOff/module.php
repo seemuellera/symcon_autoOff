@@ -436,8 +436,24 @@ class AutoOff extends IPSModule {
 			$this->LogMessage("Ignoring Timeout because a stop condition was met", "DEBUG");
 			return;
 		}
-		
+			
 		$timestampTimeout = GetValue($this->GetIDForIdent("LastTrigger")) + GetValue($this->GetIDForIdent("Timeout"));
+		
+		if ($this->ReadPropertyInteger("StopVariablesFollowUpTime") != 0) {
+			
+			$timestampTimeoutFollowUp = $timestampTimeout + $this->ReadPropertyInteger("StopVariablesFollowUpTime");
+		}
+		else {
+			
+			$timestampTimeoutFollowUp = $timestampTimeout;
+		}
+		
+		if ( ($timestampTimeout <= time()) && ($timestampTimeoutFollowUp >= time()) ) {
+			
+			// The check was triggered between the expiration and the follow-up time
+			$this->LogMessage("Timer has expired but Stop Variable cooldown is in place.","DEBUG");
+			$this->SetTimerInterval("CheckTimeout", ($this->ReadPropertyInteger("StopVariablesFollowUpTime") + 2) * 1000);
+		}
 		
 		if ($timestampTimeout <= time()) {
 			
