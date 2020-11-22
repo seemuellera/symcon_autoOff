@@ -161,6 +161,10 @@ class AutoOff extends IPSModule {
 									Array(
 										"caption" => "OnChange - AutoOff gets triggered when the value of the varible changes",
 										"value" => "OnChange"
+									),
+									Array(
+										"caption" => "OnTrue - AutoOff gets triggered when the value of the varible changes to true",
+										"value" => "OnTrue"
 									)
 								)
 							)
@@ -342,10 +346,22 @@ class AutoOff extends IPSModule {
 			$this->LogMessage("Triggered by Variable $SenderId","DEBUG");
 			
 			if ($Data[1]) {
+				
+				if ($this->GetTriggerType($SenderId) == "OnTrue") {
+					
+					if ($Data[0] == 1) {
+				
+						$this->LogMessage("Variable has changed to true value","DEBUG");
+						$this->Trigger();
+						return;
+					}
+				}
+				
 				$this->LogMessage("Variable was changed","DEBUG");
 				if ($this->GetTriggerType($SenderId) == "OnChange") {
 					
 					$this->Trigger();
+					return;
 				}
 			}
 			else {
@@ -354,6 +370,7 @@ class AutoOff extends IPSModule {
 				if ($this->GetTriggerType($SenderId) == "OnUpdate") {
 					
 					$this->Trigger();
+					return;
 				}
 			}
 			return;
