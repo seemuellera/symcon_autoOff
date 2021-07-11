@@ -165,9 +165,20 @@ class AutoOff extends IPSModule {
 									Array(
 										"caption" => "OnTrue - AutoOff gets triggered when the value of the varible changes to true",
 										"value" => "OnTrue"
+									),
+									Array(
+										"caption" => "OnSpecificValue - AutoOff gets triggered when the value of the variable changes to a specific value",
+										"value" => "OnSpecificValue"
 									)
 								)
 							)
+			),
+			Array(
+				"caption" => "Specific Value",
+				"name" => "SpecificValue",
+				"width" => "auto",
+				"edit" => Array("type" => "ValidationTextBox"),
+				"add" => 1
 			)
 		);
 		$form['elements'][] = Array(
@@ -360,6 +371,18 @@ class AutoOff extends IPSModule {
 					if ($Data[0] == 1) {
 				
 						$this->LogMessage("Variable has changed to true value","DEBUG");
+						$this->Trigger();
+						return;
+					}
+				}
+				
+				if ($this->GetTriggerType($SenderId) == "OnSpecificValue") {
+					
+					$specificValue = $this->GetTriggerSpecificValue($SenderId);
+					
+					if ($Data[0] == $specificValue) {
+				
+						$this->LogMessage("Variable has changed to value $specificValue","DEBUG");
 						$this->Trigger();
 						return;
 					}
@@ -680,6 +703,29 @@ class AutoOff extends IPSModule {
 		}
 			
 		return $triggerType;
+	}	
+
+	protected function GetTriggerSpecificValue($variableId) {
+		
+		$triggerVariables = $this->GetTriggerVariables();
+		
+		if (! $triggerVariables) {
+			
+			return false;
+		}
+		
+		$triggerSpecificValue = false;
+				
+		foreach ($triggerVariables as $currentVariable) {
+			
+			if ($variableId == $currentVariable['VariableId']) {
+				
+				$triggerSpecificValue = $currentVariable['SpecificValue'];
+				break;
+			}
+		}
+			
+		return $triggerSpecificValue;
 	}	
 
 	protected function GetStopVariables() {
