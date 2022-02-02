@@ -29,12 +29,17 @@ class AutoOff extends IPSModule {
 		$this->RegisterPropertyInteger("BlackoutTime",5);
 		$this->RegisterPropertyInteger("StopVariablesFollowUpTime",0);
 		$this->RegisterPropertyBoolean("SetIntensity",false);
+		$this->RegisterPropertyBoolean("Intensity255",false);
 		$this->RegisterPropertyBoolean("AbortTimerIfIntensityWasModified",false);
 		$this->RegisterPropertyBoolean("SetColor",false);
 		$this->RegisterPropertyBoolean("AbortTimerIfColorWasModified",false);
 		$this->RegisterPropertyBoolean("DebugOutput",false);
 		$this->RegisterPropertyString("TriggerVariables", "");
 		$this->RegisterPropertyString("StopVariables", "");
+		
+		//Attributes
+		$this->RegisterAttributeInteger("TargetIntensity",0);
+		$this->RegisterAttributeInteger("TargetColor",0);
 		
 		// Variable profiles
 		$variableProfileTimeout = "AUTOOFF.Timeout";
@@ -84,6 +89,41 @@ class AutoOff extends IPSModule {
 		$newInterval = $this->ReadPropertyInteger("RefreshInterval") * 1000;
 		$this->SetTimerInterval("RefreshInformation", $newInterval);
 		
+		if ($this->ReadPropertyBoolean("SetIntensity") ) {
+			
+			if ($this->ReadPropertyBoolean("Intensity255") ) {
+				
+				$this->RegisterVariableBoolean("TargetIntensity","Target Intensity","~Intensity.255");
+			}
+			else {
+				
+				$this->RegisterVariableBoolean("TargetIntensity","Target Intensity","~Intensity.100");
+			}
+			$this->EnableAction("TargetIntensity");
+		}
+		else {
+			
+			if (@$this->GetIDForIdent("TargetIntensity")) {
+	
+				$this->DisableAction("TargetIntensity");
+				$this->UnregisterVariable("TargetIntensity");
+			}
+		}
+		
+		if ($this->ReadPropertyBoolean("SetColor") ) {
+			
+			$this->RegisterVariableBoolean("TargetColor","Target Color","~HexColor");
+			$this->EnableAction("TargetColor");
+		}
+		else {
+			
+			if (@$this->GetIDForIdent("TargetColor")) {
+	
+				$this->DisableAction("TargetColor");
+				$this->UnregisterVariable("TargetColor");
+			}
+		}
+		
 		$triggerVariables = $this->GetTriggerVariables();
 		
 		if ($triggerVariables) {
@@ -131,6 +171,7 @@ class AutoOff extends IPSModule {
 		$form['elements'][] = Array("type" => "NumberSpinner", "name" => "BlackoutTime", "caption" => "Blackout time after last AutoOff");
 		$form['elements'][] = Array("type" => "CheckBox", "name" => "SetIntensity", "caption" => "Dim to specific intensity instead of switching on");
 		$form['elements'][] = Array("type" => "SelectVariable", "name" => "TargetIntensityVariableId", "caption" => "Intensity variable of target device");
+		$form['elements'][] = Array("type" => "CheckBox", "name" => "Intensity255", "caption" => "Use 255 step granularity instead of 100 (e.g. for HUE devices)");
 		$form['elements'][] = Array("type" => "NumberSpinner", "name" => "TargetIntensity", "caption" => "Intensity level");
 		$form['elements'][] = Array("type" => "CheckBox", "name" => "AbortTimerIfIntensityWasModified", "caption" => "Abort the Auto off timer if the intensity was modified manually during runtime");
 		$form['elements'][] = Array("type" => "CheckBox", "name" => "SetColor", "caption" => "Change to specific color instead of switching on");
@@ -345,6 +386,12 @@ class AutoOff extends IPSModule {
 			case "Timeout":
 				SetValue($this->GetIDForIdent($Ident), $Value);
 				break;
+			case "TargetIntensity":
+				SetValue($this->GetIDForIdent($Ident), $Value);
+				break;
+			case "TargetColor":
+				SetValue($this->GetIDForIdent($Ident), $Value);
+				break;
 			default:
 				throw new Exception("Invalid Ident");
 		}
@@ -465,15 +512,19 @@ class AutoOff extends IPSModule {
 			
 			if ($this->ReadPropertyBoolean("SetColor")) {
 				
-				$this->LogMessage("Changing target device to color " . $this->ReadPropertyInteger("TargetColor"),"DEBUG");
-				RequestAction($this->ReadPropertyInteger("TargetColorVariableId"), $this->ReadPropertyInteger("TargetColor"));				
+				$targetColor = ReadValue($this->GetIDForIdent("TargetColor"));
+				$this->LogMessage("Changing target device to color $targetColor", "DEBUG");
+				RequestAction($this->ReadPropertyInteger("TargetColorVariableId"), $targetColor);
+				$this->WriteAttributeInteger("TargetColor", $targetColor);
 			}
 			else {
 			
 				if ($this->ReadPropertyBoolean("SetIntensity")) {
 					
-					$this->LogMessage("Dimming target device to intensity level " . $this->ReadPropertyInteger("TargetIntensity"),"DEBUG");
-					RequestAction($this->ReadPropertyInteger("TargetIntensityVariableId"), $this->ReadPropertyInteger("TargetIntensity"));				
+					$targetIntensity = ReadValue($this->GetIDForIdent("TargetIntensity"));
+					$this->LogMessage("Dimming target device to intensity level $targetIntensity"),"DEBUG");
+					RequestAction($this->ReadPropertyInteger("TargetIntensityVariableId"), $targetIntensity);				
+					$this->WriteAttributeInteger("TargetIntensity", $targetIntensity);
 				}
 				else {
 				
@@ -529,7 +580,7 @@ class AutoOff extends IPSModule {
 			
 			if ($this->ReadPropertyBoolean("AbortTimerIfColorWasModified")) {
 				
-				if (GetValue($this->ReadPropertyInteger("TargetColorVariableId")) != $this->ReadPropertyInteger("TargetColor")) {
+				if (GetValue($this->ReadPropertyInteger("TargetColorVariableId")) != $this->ReadAttributeInteger("TargetColor")) {
 					
 					$this->LogMessage("Stopping AutoOff timer but the target device will not be switched off as the color was manually modified","DEBUG");
 					return;
@@ -538,7 +589,7 @@ class AutoOff extends IPSModule {
 			
 			if ($this->ReadPropertyBoolean("AbortTimerIfIntensityWasModified")) {
 				
-				if (GetValue($this->ReadPropertyInteger("TargetIntensityVariableId")) != $this->ReadPropertyInteger("TargetIntensity")) {
+				if (GetValue($this->ReadPropertyInteger("TargetIntensityVariableId")) != $this->ReadAttributeInteger("TargetIntensity")) {
 					
 					$this->LogMessage("Stopping AutoOff timer but the target device will not be switched off as the Intensity level was manually modified","DEBUG");
 					return;
