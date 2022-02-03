@@ -98,6 +98,7 @@ class AutoOff extends IPSModule {
 				$this->RegisterVariableInteger("TargetIntensity","Target Intensity","~Intensity.100");
 			}
 			$this->EnableAction("TargetIntensity");
+			$this->RegisterReference($this->ReadPropertyInteger("TargetIntensityVariableId"));
 		}
 		else {
 			
@@ -112,6 +113,7 @@ class AutoOff extends IPSModule {
 			
 			$this->RegisterVariableInteger("TargetColor","Target Color","~HexColor");
 			$this->EnableAction("TargetColor");
+			$this->RegisterReference($this->ReadPropertyInteger("TargetColorVariableId"));
 		}
 		else {
 			
@@ -130,6 +132,7 @@ class AutoOff extends IPSModule {
 				
 				$this->LogMessage("Registering Message Sink for Variable ID " . $currentVariable['VariableId'], "DEBUG");
 				$this->RegisterMessage($currentVariable['VariableId'], VM_UPDATE);
+				$this->RegisterReference($currentVariable['VariableId']);
 			}
 		}
 
@@ -141,12 +144,13 @@ class AutoOff extends IPSModule {
 				
 				$this->LogMessage("Registering Message Sink for Variable ID " . $currentStopVariable['VariableId'], "DEBUG");
 				$this->RegisterMessage($currentStopVariable['VariableId'], VM_UPDATE);
-				
+				$this->RegisterReference($currentStopVariable['VariableId']);
 			}
 		}
 		
 		// Also register the target variable to keep track of change events
 		$this->RegisterMessage($this->ReadPropertyInteger("TargetStatusVariableId"), VM_UPDATE);
+		$this->RegisterReference($this->ReadPropertyInteger("TargetStatusVariableId"));
 		
 		// Diese Zeile nicht löschen
 		parent::ApplyChanges();
