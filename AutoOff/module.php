@@ -522,7 +522,7 @@ class AutoOff extends IPSModule {
 				if ($this->ReadPropertyBoolean("SetIntensity")) {
 					
 					$targetIntensity = ReadValue($this->GetIDForIdent("TargetIntensity"));
-					$this->LogMessage("Dimming target device to intensity level $targetIntensity"),"DEBUG");
+					$this->LogMessage("Dimming target device to intensity level $targetIntensity","DEBUG");
 					RequestAction($this->ReadPropertyInteger("TargetIntensityVariableId"), $targetIntensity);				
 					$this->WriteAttributeInteger("TargetIntensity", $targetIntensity);
 				}
