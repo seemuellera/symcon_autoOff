@@ -512,7 +512,7 @@ class AutoOff extends IPSModule {
 			
 			if ($this->ReadPropertyBoolean("SetColor")) {
 				
-				$targetColor = ReadValue($this->GetIDForIdent("TargetColor"));
+				$targetColor = GetValue($this->GetIDForIdent("TargetColor"));
 				$this->LogMessage("Changing target device to color $targetColor", "DEBUG");
 				RequestAction($this->ReadPropertyInteger("TargetColorVariableId"), $targetColor);
 				$this->WriteAttributeInteger("TargetColor", $targetColor);
@@ -521,7 +521,7 @@ class AutoOff extends IPSModule {
 			
 				if ($this->ReadPropertyBoolean("SetIntensity")) {
 					
-					$targetIntensity = ReadValue($this->GetIDForIdent("TargetIntensity"));
+					$targetIntensity = GetValue($this->GetIDForIdent("TargetIntensity"));
 					$this->LogMessage("Dimming target device to intensity level $targetIntensity","DEBUG");
 					RequestAction($this->ReadPropertyInteger("TargetIntensityVariableId"), $targetIntensity);				
 					$this->WriteAttributeInteger("TargetIntensity", $targetIntensity);
