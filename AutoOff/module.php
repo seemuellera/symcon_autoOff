@@ -93,11 +93,11 @@ class AutoOff extends IPSModule {
 			
 			if ($this->ReadPropertyBoolean("Intensity255") ) {
 				
-				$this->RegisterVariableBoolean("TargetIntensity","Target Intensity","~Intensity.255");
+				$this->RegisterVariableInteger("TargetIntensity","Target Intensity","~Intensity.255");
 			}
 			else {
 				
-				$this->RegisterVariableBoolean("TargetIntensity","Target Intensity","~Intensity.100");
+				$this->RegisterVariableInteger("TargetIntensity","Target Intensity","~Intensity.100");
 			}
 			$this->EnableAction("TargetIntensity");
 		}
@@ -112,7 +112,7 @@ class AutoOff extends IPSModule {
 		
 		if ($this->ReadPropertyBoolean("SetColor") ) {
 			
-			$this->RegisterVariableBoolean("TargetColor","Target Color","~HexColor");
+			$this->RegisterVariableInteger("TargetColor","Target Color","~HexColor");
 			$this->EnableAction("TargetColor");
 		}
 		else {
