@@ -184,15 +184,39 @@ class AutoOff extends IPSModule {
 										Array("type" => "CheckBox", "name" => "DebugOutput", "caption" => "Enable Debug Output")									
 									)
 								);
+								
+		$form['elements'][] = Array(
+								"type" => "ExpansionPanel", 
+								"caption" => "Global Settings",
+								"expanded" => true,
+								"items" => Array(
+										Array("type" => "SelectVariable", "name" => "TargetStatusVariableId", "caption" => "Status variable of target device"),
+										Array("type" => "NumberSpinner", "name" => "BlackoutTime", "caption" => "Blackout time after last AutoOff")
+									)
+								);
+								
+		$form['elements'][] = Array(
+								"type" => "ExpansionPanel", 
+								"caption" => "Dimming Settings",
+								"expanded" => false,
+								"items" => Array(
+										Array("type" => "CheckBox", "name" => "SetIntensity", "caption" => "Dim to specific intensity instead of switching on"),
+										Array("type" => "SelectVariable", "name" => "TargetIntensityVariableId", "caption" => "Intensity variable of target device"),
+										Array("type" => "CheckBox", "name" => "AbortTimerIfIntensityWasModified", "caption" => "Abort the Auto off timer if the intensity was modified manually during runtime")
+									)
+								);
 		
-		$form['elements'][] = Array("type" => "SelectVariable", "name" => "TargetStatusVariableId", "caption" => "Status variable of target device");
-		$form['elements'][] = Array("type" => "NumberSpinner", "name" => "BlackoutTime", "caption" => "Blackout time after last AutoOff");
-		$form['elements'][] = Array("type" => "CheckBox", "name" => "SetIntensity", "caption" => "Dim to specific intensity instead of switching on");
-		$form['elements'][] = Array("type" => "SelectVariable", "name" => "TargetIntensityVariableId", "caption" => "Intensity variable of target device");
-		$form['elements'][] = Array("type" => "CheckBox", "name" => "AbortTimerIfIntensityWasModified", "caption" => "Abort the Auto off timer if the intensity was modified manually during runtime");
-		$form['elements'][] = Array("type" => "CheckBox", "name" => "SetColor", "caption" => "Change to specific color instead of switching on");
-		$form['elements'][] = Array("type" => "SelectVariable", "name" => "TargetColorVariableId", "caption" => "color variable of target device");
-		$form['elements'][] = Array("type" => "CheckBox", "name" => "AbortTimerIfColorWasModified", "caption" => "Abort the Auto off timer if the Color was modified manually during runtime");
+		$form['elements'][] = Array(
+								"type" => "ExpansionPanel", 
+								"caption" => "Color Settings",
+								"expanded" => false,
+								"items" => Array(
+										Array("type" => "CheckBox", "name" => "SetColor", "caption" => "Change to specific color instead of switching on"),
+										Array("type" => "SelectVariable", "name" => "TargetColorVariableId", "caption" => "color variable of target device"),
+										Array("type" => "CheckBox", "name" => "AbortTimerIfColorWasModified", "caption" => "Abort the Auto off timer if the Color was modified manually during runtime")
+									)
+								);
+		
 		
 		$sensorListColumns = Array(
 			Array(
