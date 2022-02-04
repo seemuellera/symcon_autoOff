@@ -27,7 +27,6 @@ class AutoOff extends IPSModule {
 		$this->RegisterPropertyInteger("BlackoutTime",5);
 		$this->RegisterPropertyInteger("StopVariablesFollowUpTime",0);
 		$this->RegisterPropertyBoolean("SetIntensity",false);
-		$this->RegisterPropertyBoolean("Intensity255",false);
 		$this->RegisterPropertyBoolean("AbortTimerIfIntensityWasModified",false);
 		$this->RegisterPropertyBoolean("SetColor",false);
 		$this->RegisterPropertyBoolean("AbortTimerIfColorWasModified",false);
@@ -183,7 +182,6 @@ class AutoOff extends IPSModule {
 		$form['elements'][] = Array("type" => "NumberSpinner", "name" => "BlackoutTime", "caption" => "Blackout time after last AutoOff");
 		$form['elements'][] = Array("type" => "CheckBox", "name" => "SetIntensity", "caption" => "Dim to specific intensity instead of switching on");
 		$form['elements'][] = Array("type" => "SelectVariable", "name" => "TargetIntensityVariableId", "caption" => "Intensity variable of target device");
-		$form['elements'][] = Array("type" => "CheckBox", "name" => "Intensity255", "caption" => "Use 255 step granularity instead of 100 (e.g. for HUE devices)");
 		$form['elements'][] = Array("type" => "CheckBox", "name" => "AbortTimerIfIntensityWasModified", "caption" => "Abort the Auto off timer if the intensity was modified manually during runtime");
 		$form['elements'][] = Array("type" => "CheckBox", "name" => "SetColor", "caption" => "Change to specific color instead of switching on");
 		$form['elements'][] = Array("type" => "SelectVariable", "name" => "TargetColorVariableId", "caption" => "color variable of target device");
