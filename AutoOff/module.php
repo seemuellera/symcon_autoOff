@@ -88,7 +88,7 @@ class AutoOff extends IPSModule {
 		
 		if ($this->ReadPropertyBoolean("SetIntensity") ) {
 			
-			$varDetails = IPS_GetVariable($this->GetIDForIdent("TargetIntensityVariableId"));
+			$varDetails = IPS_GetVariable($this->ReadPropertyInteger("TargetIntensityVariableId"));
 			$profile = "";
 			if ($varDetails['VariableCustomProfile'] != "") {
 				
@@ -112,7 +112,7 @@ class AutoOff extends IPSModule {
 		
 		if ($this->ReadPropertyBoolean("SetColor") ) {
 			
-			$varDetails = IPS_GetVariable($this->GetIDForIdent("TargetColorVariableId"));
+			$varDetails = IPS_GetVariable($this->ReadPropertyInteger("TargetColorVariableId"));
 			$profile = "";
 			if ($varDetails['VariableCustomProfile'] != "") {
 				
