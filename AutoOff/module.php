@@ -62,6 +62,8 @@ class AutoOff extends IPSModule {
 		$this->RegisterVariableInteger("LastStopConditionMet","Last Stop Condition met","~UnixTimestamp");
 		$this->RegisterVariableInteger("LastStopConditionCleared","Last Stop Condition cleared","~UnixTimestamp");
 		$this->RegisterVariableInteger("Timeout","Timeout","AUTOOFF.Timeout");
+		$this->RegisterVariableBoolean("StopConditionTurnOn","Stop Condition: Turn on disabled","~Alert");
+		$this->RegisterVariableBoolean("StopConditionTurnOff","Stop Condition: Turn off disabled","~Alert");
 
 		// Default Actions
 		$this->EnableAction("Status");
@@ -359,6 +361,9 @@ class AutoOff extends IPSModule {
 				return;
 			}
 		}
+			
+		SetValue($this->GetIDForIdent("StopConditionTurnOn"), $this->CheckStopConditions("TurnOn"));
+		SetValue($this->GetIDForIdent("StopConditionTurnOff"), $this->CheckStopConditions("TurnOff"));
 		
 		$timestampBlackout = GetValue($this->GetIDForIdent("LastAutoOff")) + $this->ReadPropertyInteger("BlackoutTime");
 		$deltaBlackout = $timestampBlackout - time();
