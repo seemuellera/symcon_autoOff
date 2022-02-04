@@ -175,8 +175,15 @@ class AutoOff extends IPSModule {
         		);
 
 		// Add the Elements
-		$form['elements'][] = Array("type" => "NumberSpinner", "name" => "RefreshInterval", "caption" => "Refresh Interval");
-		$form['elements'][] = Array("type" => "CheckBox", "name" => "DebugOutput", "caption" => "Enable Debug Output");
+		$form['elements'][] = Array(
+								"type" => "ExpansionPanel", 
+								"caption" => "General Settings",
+								"expanded" => true,
+								"items" => [
+										{ "type" => "NumberSpinner", "name" => "RefreshInterval", "caption" => "Refresh Interval" },
+										{"type" => "CheckBox", "name" => "DebugOutput", "caption" => "Enable Debug Output" }
+									]
+								);
 		
 		$form['elements'][] = Array("type" => "SelectVariable", "name" => "TargetStatusVariableId", "caption" => "Status variable of target device");
 		$form['elements'][] = Array("type" => "NumberSpinner", "name" => "BlackoutTime", "caption" => "Blackout time after last AutoOff");
