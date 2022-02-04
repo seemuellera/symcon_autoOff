@@ -106,7 +106,6 @@ class AutoOff extends IPSModule {
 		}
 		else {
 			
-			$this->DisableAction("TargetIntensity");
 			$this->MaintainVariable("TargetIntensity", "Target Intensity", 1, $profile, 0, false);
 		}
 		
@@ -129,7 +128,6 @@ class AutoOff extends IPSModule {
 		}
 		else {
 			
-			$this->DisableAction("TargetColor");
 			$this->MaintainVariable("TargetColor", "Target Color", 1, $profile, 0, false);
 		}
 		
