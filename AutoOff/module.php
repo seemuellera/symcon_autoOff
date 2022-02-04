@@ -89,39 +89,49 @@ class AutoOff extends IPSModule {
 		
 		if ($this->ReadPropertyBoolean("SetIntensity") ) {
 			
-			if ($this->ReadPropertyBoolean("Intensity255") ) {
+			$varDetails = IPS_GetVariable($this->GetIDForIdent("TargetIntensityVariableId"));
+			$profile = "";
+			if ($varDetails['VariableCustomProfile'] != "") {
 				
-				$this->RegisterVariableInteger("TargetIntensity","Target Intensity","~Intensity.255");
+				$profile = $varDetails['VariableCustomProfile'];
 			}
 			else {
 				
-				$this->RegisterVariableInteger("TargetIntensity","Target Intensity","~Intensity.100");
+				$profile = $varDetails['VariableProfile'];
 			}
+			
+			$this->MaintainVariable("TargetIntensity", "Target Intensity", 1, $profile, 0, true);
+			
 			$this->EnableAction("TargetIntensity");
 			$this->RegisterReference($this->ReadPropertyInteger("TargetIntensityVariableId"));
 		}
 		else {
 			
-			if (@$this->GetIDForIdent("TargetIntensity")) {
-	
-				$this->DisableAction("TargetIntensity");
-				$this->UnregisterVariable("TargetIntensity");
-			}
+			$this->DisableAction("TargetIntensity");
+			$this->MaintainVariable("TargetIntensity", "Target Intensity", 1, $profile, 0, false);
 		}
 		
 		if ($this->ReadPropertyBoolean("SetColor") ) {
 			
-			$this->RegisterVariableInteger("TargetColor","Target Color","~HexColor");
+			$varDetails = IPS_GetVariable($this->GetIDForIdent("TargetColorVariableId"));
+			$profile = "";
+			if ($varDetails['VariableCustomProfile'] != "") {
+				
+				$profile = $varDetails['VariableCustomProfile'];
+			}
+			else {
+				
+				$profile = $varDetails['VariableProfile'];
+			}
+			
+			$this->MaintainVariable("TargetColor", "Target Color", 1, $profile, 0, true);
 			$this->EnableAction("TargetColor");
 			$this->RegisterReference($this->ReadPropertyInteger("TargetColorVariableId"));
 		}
 		else {
 			
-			if (@$this->GetIDForIdent("TargetColor")) {
-	
-				$this->DisableAction("TargetColor");
-				$this->UnregisterVariable("TargetColor");
-			}
+			$this->DisableAction("TargetColor");
+			$this->MaintainVariable("TargetColor", "Target Color", 1, $profile, 0, false);
 		}
 		
 		$triggerVariables = $this->GetTriggerVariables();
