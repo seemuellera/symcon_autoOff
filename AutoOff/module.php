@@ -59,8 +59,6 @@ class AutoOff extends IPSModule {
 		$this->RegisterVariableBoolean("DetectionEnabled","Motion Detection Enabled","~Switch");
 		$this->RegisterVariableInteger("LastTrigger","Last Trigger","~UnixTimestamp");
 		$this->RegisterVariableInteger("LastAutoOff","Last AutoOff","~UnixTimestamp");
-		$this->RegisterVariableInteger("LastStopConditionMet","Last Stop Condition met","~UnixTimestamp");
-		$this->RegisterVariableInteger("LastStopConditionCleared","Last Stop Condition cleared","~UnixTimestamp");
 		$this->RegisterVariableInteger("Timeout","Timeout","AUTOOFF.Timeout");
 		$this->RegisterVariableBoolean("StopConditionTurnOn","Stop Condition: Turn on disabled","~Alert");
 		$this->RegisterVariableBoolean("StopConditionTurnOff","Stop Condition: Turn off disabled","~Alert");
