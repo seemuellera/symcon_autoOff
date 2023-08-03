@@ -100,7 +100,7 @@ class AutoOff extends IPSModule {
 		$messagesList = $this->GetMessageList();
 		foreach ($messagesList as $currentMessage) {
 
-			$this->UnregisterMessage($currentMessage, VM_CHANGE);
+			$this->UnregisterMessage($currentMessage, VM_UPDATE);
 		}
 		
 		if ($this->ReadPropertyBoolean("SetIntensity") ) {
