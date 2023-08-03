@@ -37,6 +37,7 @@ class AutoOff extends IPSModule {
 		//Attributes
 		$this->RegisterAttributeInteger("TargetIntensity",0);
 		$this->RegisterAttributeInteger("TargetColor",0);
+		$this->RegisterAttributeInteger("LastTrigger",0);
 		
 		// Variable profiles
 		$variableProfileTimeout = "AUTOOFF.Timeout";
@@ -59,6 +60,8 @@ class AutoOff extends IPSModule {
 		$this->RegisterVariableBoolean("DetectionEnabled","Motion Detection Enabled","~Switch");
 		$this->RegisterVariableInteger("LastTrigger","Last Trigger","~UnixTimestamp");
 		$this->RegisterVariableInteger("LastAutoOff","Last AutoOff","~UnixTimestamp");
+		$this->RegisterVariableInteger("LastStopConditionMet","Last Stop Condition met","~UnixTimestamp");
+		$this->RegisterVariableInteger("LastStopConditionCleared","Last Stop Condition cleared","~UnixTimestamp");
 		$this->RegisterVariableInteger("Timeout","Timeout","AUTOOFF.Timeout");
 		$this->RegisterVariableBoolean("StopConditionTurnOn","Stop Condition: Turn on disabled","~Alert");
 		$this->RegisterVariableBoolean("StopConditionTurnOff","Stop Condition: Turn off disabled","~Alert");
@@ -85,6 +88,13 @@ class AutoOff extends IPSModule {
 
 		$newInterval = $this->ReadPropertyInteger("RefreshInterval") * 1000;
 		$this->SetTimerInterval("RefreshInformation", $newInterval);
+
+		// Clean old registrations
+		$referenceList = $this->GetReferenceList();
+		foreach ($referenceList as $currentReference) {
+
+			$this->UnregisterReference($this->InstanceID, $currentReference);
+		}
 		
 		if ($this->ReadPropertyBoolean("SetIntensity") ) {
 			
@@ -544,6 +554,7 @@ class AutoOff extends IPSModule {
 		
 		$this->LogMessage("Triggering Timer", "DEBUG");
 		SetValue($this->GetIDForIdent("LastTrigger"), time());
+		$this->WriteAttributeInteger("LastTrigger", time());
 		
 		// Set Time to timeout with some security margin (2 seconds)
 		$newInterval = ( GetValue($this->GetIDForIdent("Timeout") ) + 2 ) * 1000;
@@ -595,7 +606,7 @@ class AutoOff extends IPSModule {
 			return;
 		}
 			
-		$timestampTimeout = GetValue($this->GetIDForIdent("LastTrigger")) + GetValue($this->GetIDForIdent("Timeout"));
+		$timestampTimeout = $this->ReadAttributeInteger("LastTrigger") + GetValue($this->GetIDForIdent("Timeout"));
 		
 		if ($this->ReadPropertyInteger("StopVariablesFollowUpTime") != 0) {
 			
