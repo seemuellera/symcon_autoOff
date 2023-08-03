@@ -89,11 +89,18 @@ class AutoOff extends IPSModule {
 		$newInterval = $this->ReadPropertyInteger("RefreshInterval") * 1000;
 		$this->SetTimerInterval("RefreshInformation", $newInterval);
 
-		// Clean old registrations
+		// Clean old references
 		$referenceList = $this->GetReferenceList();
 		foreach ($referenceList as $currentReference) {
 
 			$this->UnregisterReference($this->InstanceID, $currentReference);
+		}
+
+		// Clean old message registration
+		$messagesList = $this->GetMessageList();
+		foreach ($messagesList as $currentMessage) {
+
+			$this->UnregisterMessage($this->InstanceID, $currentMessage);
 		}
 		
 		if ($this->ReadPropertyBoolean("SetIntensity") ) {
